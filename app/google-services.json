@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "471905497939",
+    "project_id": "ritelshop-7218e",
+    "storage_bucket": "ritelshop-7218e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471905497939:android:8a88543d584a04f0b4a7a6",
+        "android_client_info": {
+          "package_name": "com.example.retailershop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMzvDvmHV8BRyIkMbGor8-X0SMEXlMD4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
