@@ -8,11 +8,13 @@
     android:background="@drawable/background_gradient"
     tools:context=".RegisterActivity">
 
+    <!-- CardView untuk Formulir Register -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewRegister"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="32dp"
         app:cardCornerRadius="16dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,21 +22,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- LinearLayout untuk Isi Form -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background_gradient"
-            android:padding="16dp">
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="16dp">
 
+            <!-- Logo -->
             <ImageView
                 android:id="@+id/logoRegister"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_launcher_foreground"
-                android:layout_marginTop="32dp" />
+                android:contentDescription="Logo App"
+                android:layout_marginTop="16dp" />
 
+            <!-- Full Name -->
             <EditText
                 android:id="@+id/fullNameRegister"
                 android:layout_width="match_parent"
@@ -43,6 +50,7 @@
                 android:hint="Full Name"
                 android:inputType="textPersonName" />
 
+            <!-- Email -->
             <EditText
                 android:id="@+id/emailRegister"
                 android:layout_width="match_parent"
@@ -51,6 +59,7 @@
                 android:hint="Email"
                 android:inputType="textEmailAddress" />
 
+            <!-- Phone -->
             <EditText
                 android:id="@+id/phoneRegister"
                 android:layout_width="match_parent"
@@ -59,6 +68,7 @@
                 android:hint="Phone Number"
                 android:inputType="phone" />
 
+            <!-- Address -->
             <EditText
                 android:id="@+id/addressRegister"
                 android:layout_width="match_parent"
@@ -67,6 +77,7 @@
                 android:hint="Full Address"
                 android:inputType="textPostalAddress" />
 
+            <!-- Password -->
             <EditText
                 android:id="@+id/passwordRegister"
                 android:layout_width="match_parent"
@@ -75,6 +86,7 @@
                 android:hint="Password"
                 android:inputType="textPassword" />
 
+            <!-- Key Code -->
             <EditText
                 android:id="@+id/keyCodeRegister"
                 android:layout_width="match_parent"
@@ -83,17 +95,15 @@
                 android:hint="Key Code"
                 android:inputType="text" />
 
+            <!-- Button Register -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/register_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="Register"
                 android:background="@drawable/button_gradient_orange"
-                android:backgroundTint="@null"
                 android:textColor="@android:color/white" />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
