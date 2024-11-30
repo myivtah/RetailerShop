@@ -13,14 +13,33 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/button_gradient_orange"
+        android:padding="16dp">
+            <!-- Nama Toko -->
+            <TextView
+                android:id="@+id/storeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="Lotte Mart"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profilePicture"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/profilePicture" />
 
-        <include
-            android:id="@+id/headerLayout"
-            layout="@layout/header_store"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <!-- Foto Profil -->
+            <ImageView
+                android:id="@+id/profilePicture"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="24dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Content Area -->
@@ -32,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayoutHeader">
 
-        <!-- Card: Penjualan -->
+        <!-- Card: Transaksi -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardSales"
             android:layout_width="300dp"
@@ -48,12 +67,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="sans-serif-medium"
-                android:text="Penjualan"
+                android:text="Transaksi"
                 android:textColor="@android:color/white"
                 android:textSize="22sp" />
         </androidx.cardview.widget.CardView>
 
-        <!-- Card: Tambah Item -->
+        <!-- Card: Item -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardAddItem"
             android:layout_width="280dp"
@@ -69,15 +88,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Tambah Item"
+                android:text="Stok Item"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
                 android:fontFamily="sans-serif-medium" />
         </androidx.cardview.widget.CardView>
 
-        <!-- Card: Stok Item -->
+        <!-- Card: Suplier -->
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardStock"
+            android:id="@+id/cardSuplier"
             android:layout_width="260dp"
             android:layout_height="80dp"
             android:layout_marginTop="16dp"
@@ -91,10 +110,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Stok Item"
-                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Suplier"
                 android:textColor="@android:color/white"
-                android:fontFamily="sans-serif-medium" />
+                android:textSize="18sp" />
         </androidx.cardview.widget.CardView>
 
         <!-- Card: Aktivitas -->
@@ -106,7 +125,7 @@
             app:cardBackgroundColor="#FF5722"
             app:cardCornerRadius="24dp"
             android:layout_marginStart="-20dp"
-            app:layout_constraintTop_toBottomOf="@+id/cardStock"
+            app:layout_constraintTop_toBottomOf="@+id/cardSuplier"
             app:layout_constraintStart_toStartOf="parent">
 
             <TextView
@@ -114,6 +133,28 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Aktivitas"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:fontFamily="sans-serif-medium" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Card: Membership -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardMember"
+            android:layout_width="220dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#FF32D4"
+            app:cardCornerRadius="24dp"
+            android:layout_marginStart="-20dp"
+            app:layout_constraintTop_toBottomOf="@+id/cardActivity"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Membership"
                 android:textSize="18sp"
                 android:textColor="@android:color/white"
                 android:fontFamily="sans-serif-medium" />

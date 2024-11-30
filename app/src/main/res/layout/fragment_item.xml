@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- CardView Container untuk form tambah/edit item -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- ID Item -->
+                <TextView
+                    android:id="@+id/tv_id_item"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="ID Item (Code Bar)"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_id_item">
+
+                    <EditText
+                        android:id="@+id/et_id_item"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:hint="Scan atau masukkan ID"
+                        android:inputType="text"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/btn_scan_barcode"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/btn_scan_barcode"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:contentDescription="Scan Barcode"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/et_id_item"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Nama Item -->
+                <TextView
+                    android:id="@+id/tv_nama_item"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Nama Item"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/constraintLayout"
+                    android:layout_marginTop="16dp" />
+
+                <EditText
+                    android:id="@+id/et_nama_item"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Masukkan nama item"
+                    android:inputType="text"
+                    app:layout_constraintTop_toBottomOf="@id/tv_nama_item"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Harga Satuan -->
+                <TextView
+                    android:id="@+id/tv_harga_satuan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Harga Satuan"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_nama_item"
+                    android:layout_marginTop="16dp" />
+
+                <EditText
+                    android:id="@+id/et_harga_satuan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Masukkan harga satuan"
+                    android:inputType="numberDecimal"
+                    app:layout_constraintTop_toBottomOf="@id/tv_harga_satuan"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Harga Satuan Beli -->
+                <TextView
+                    android:id="@+id/tv_harga_satuan_beli"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Harga Satuan Beli"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_harga_satuan"
+                    android:layout_marginTop="16dp" />
+
+                <EditText
+                    android:id="@+id/et_harga_satuan_beli"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Masukkan harga beli"
+                    android:inputType="numberDecimal"
+                    app:layout_constraintTop_toBottomOf="@id/tv_harga_satuan_beli"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Quantity -->
+                <TextView
+                    android:id="@+id/tv_quantity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Quantity"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_harga_satuan_beli"
+                    android:layout_marginTop="16dp" />
+
+                <EditText
+                    android:id="@+id/et_quantity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Masukkan jumlah item"
+                    android:inputType="number"
+                    app:layout_constraintTop_toBottomOf="@id/tv_quantity"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Tanggal Input -->
+                <TextView
+                    android:id="@+id/tv_tanggal_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tanggal Data Diinputkan"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_quantity"
+                    android:layout_marginTop="16dp" />
+
+                <EditText
+                    android:id="@+id/et_tanggal_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Pilih tanggal"
+                    android:focusable="false"
+                    android:clickable="true"
+                    app:layout_constraintTop_toBottomOf="@id/tv_tanggal_input"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Suplier Dropdown -->
+                <TextView
+                    android:id="@+id/tv_suplier"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Suplier"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_tanggal_input"
+                    android:layout_marginTop="16dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_suplier"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tv_suplier"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Button Simpan -->
+                <Button
+                    android:id="@+id/btn_simpan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Simpan"
+                    android:backgroundTint="@color/blue"
+                    app:layout_constraintTop_toBottomOf="@id/spinner_suplier"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="24dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
