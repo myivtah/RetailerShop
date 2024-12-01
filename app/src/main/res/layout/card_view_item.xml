@@ -23,7 +23,7 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="12dp"/>
@@ -37,7 +37,7 @@
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_id_item"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"/>
@@ -51,7 +51,7 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_nama_item"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"/>
@@ -65,7 +65,7 @@
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_harga_satuan"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"/>
@@ -82,21 +82,47 @@
             android:text="Tanggal Diinputkan"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_quantity" />
 
-        <!-- Edit Button -->
-        <ImageButton
-            android:id="@+id/btn_edit_item"
-            android:layout_width="40dp"
-            android:layout_height="80dp"
-            android:layout_marginEnd="12dp"
-            android:background="?attr/selectableItemBackground"
-            android:contentDescription="Edit Item"
+        <LinearLayout
+            android:id="@+id/linearEditDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+            <!-- Edit Button -->
+            <ImageButton
+                android:id="@+id/btn_edit_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="15dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Edit Item"
+                android:src="@drawable/ic_edit"
+                app:layout_constraintBottom_toBottomOf="@id/btn_delete_item"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Delete Button -->
+            <ImageButton
+                android:id="@+id/btn_delete_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Edit Item"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_edit_item" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

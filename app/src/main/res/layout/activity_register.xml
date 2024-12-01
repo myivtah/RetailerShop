@@ -8,6 +8,17 @@
     android:background="@drawable/background_gradient"
     tools:context=".RegisterActivity">
 
+    <ImageButton
+        android:id="@+id/imageBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_back"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardViewRegister"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- CardView untuk Formulir Register -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewRegister"
