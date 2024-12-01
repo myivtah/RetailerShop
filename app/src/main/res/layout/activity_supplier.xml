@@ -1,62 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@android:color/white">
+    android:background="@drawable/background_gradient"
+    tools:context=".SupplierActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/imageBack_supplier"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/rounded_corners"
-        android:padding="16dp"
-        android:elevation="4dp">
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_back"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/supplierTitle"
+    <!-- RecyclerView for displaying supplier list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_suppliers"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="12dp"
+        android:background="@color/white"
+        android:padding="12sp"
+        app:layout_constraintTop_toBottomOf="@id/imageBack_supplier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout_supplier" />
+
+    <!-- Layout for buttons at the bottom -->
+    <LinearLayout
+        android:id="@+id/buttons_layout_supplier"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Button to add a new supplier -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_add_supplier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Supplier Management"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:paddingBottom="16dp"
-            android:textColor="@android:color/holo_blue_dark"/>
-
-        <EditText
-            android:id="@+id/supplierName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Supplier Name"
-            android:padding="8dp"
-            android:background="@drawable/edit_text_background"/>
-
-        <EditText
-            android:id="@+id/supplierContact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Supplier Contact"
-            android:padding="8dp"
-            android:background="@drawable/edit_text_background"/>
-
-        <Button
-            android:id="@+id/addSupplier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Supplier"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@android:color/holo_blue_dark"
-            android:textColor="@android:color/white"/>
-
-        <ListView
-            android:id="@+id/supplierList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:divider="@android:color/holo_blue_dark"
-            android:dividerHeight="1dp"/>
-
+            android:text="Tambah Supplier"
+            android:layout_marginEnd="16dp" />
     </LinearLayout>
-</ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

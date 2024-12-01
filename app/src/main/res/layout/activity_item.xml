@@ -10,11 +10,9 @@
 
     <!-- Back Button -->
     <ImageButton
-        android:id="@+id/imageBack"
+        android:id="@+id/imageBack_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_constraintStart_toStartOf="parent"
-        android:layout_constraintTop_toTopOf="parent"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_back"
         android:layout_marginTop="20dp"
@@ -29,13 +27,15 @@
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toTopOf="@id/buttons_layout"
+        android:background="@color/white"
+        android:padding="12sp"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout_item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageBack" />
+        app:layout_constraintTop_toBottomOf="@+id/imageBack_item" />
 
     <LinearLayout
-        android:id="@+id/buttons_layout"
+        android:id="@+id/buttons_layout_item"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -51,11 +51,6 @@
             android:text="Tambah Item"
             android:layout_marginEnd="16dp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_back_to_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kembali" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

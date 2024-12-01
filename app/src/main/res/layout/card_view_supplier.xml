@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_margin="8dp"
+    android:padding="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Supplier Name -->
+        <TextView
+            android:id="@+id/tv_supplier_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Supplier Name"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@id/linearSupplier"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Supplier Phone -->
+        <TextView
+            android:id="@+id/tv_supplier_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Supplier Phone"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/linearSupplier"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_supplier_name" />
+
+        <!-- Edit and Delete Buttons -->
+        <LinearLayout
+            android:id="@+id/linearSupplier"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Edit Button -->
+            <ImageButton
+                android:id="@+id/btn_edit_supplier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Edit Supplier"
+                android:layout_marginEnd="12dp" />
+
+            <!-- Delete Button -->
+            <ImageButton
+                android:id="@+id/btn_delete_supplier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Delete Supplier"
+                android:layout_marginBottom="12dp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

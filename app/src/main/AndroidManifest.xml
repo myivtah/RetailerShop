@@ -19,6 +19,21 @@
         android:theme="@style/Theme.RetailerShop"
         tools:targetApi="31">
         <activity
+            android:name=".InputSupplierActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ActivitiesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MemberActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SupplierActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditItemActivity"
+            android:exported="false" />
+        <activity
             android:name=".InputActivity"
             android:exported="false" />
         <activity
@@ -27,7 +42,7 @@
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
-            tools:replace="android:screenOrientation"></activity>
+            tools:replace="android:screenOrientation" />
         <activity
             android:name=".ItemActivity"
             android:exported="false" />

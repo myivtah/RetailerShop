@@ -1,65 +1,129 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/rounded_corners"
+    tools:context=".TransactionActivity">
 
     <!-- Back Button -->
     <ImageButton
         android:id="@+id/imageBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_constraintStart_toStartOf="parent"
-        android:layout_constraintTop_toTopOf="parent"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_back"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
 
     <!-- LinearLayout Content Section -->
-    <LinearLayout
-        android:id="@+id/linearLayoutContent"
+    <TextView
+        android:id="@+id/tittleTransaction"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_constraintTop_toBottomOf="@+id/imageBack"
-        android:layout_constraintBottom_toBottomOf="parent"
-        android:layout_constraintEnd_toEndOf="parent"
-        android:layout_constraintStart_toStartOf="parent"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:text="Transaction Management"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/imageBack"
+        app:layout_constraintStart_toEndOf="@+id/imageBack"
+        app:layout_constraintTop_toTopOf="@+id/imageBack" />
+
+    <LinearLayout
+        android:id="@+id/Barcode_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:weightSum="2"
         app:layout_constraintTop_toBottomOf="@+id/imageBack">
 
-        <!-- RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <!-- Input Barcode (manual entry) -->
+        <EditText
+            android:id="@+id/inputBarcode"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginTop="40dp"
-            android:paddingTop="8dp" />
+            android:hint="Enter Barcode Code"
+            android:inputType="text"
+            android:padding="10dp" />
 
-        <!-- Total Price -->
-        <TextView
-            android:id="@+id/totalPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/darker_gray"
-            android:gravity="center"
-            android:padding="12dp"
-            android:text=""
-            android:hint="Rp.2000000"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+        <ImageButton
+            android:id="@+id/tambahItemTransaksi"
+            android:background="@android:color/transparent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/ic_plus"
+            app:tint="@color/blue" />
 
-        <!-- Submit Button -->
-        <Button
-            android:id="@+id/submitTransaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Submit Transaction" />
+        <!-- Scan Barcode Button -->
+        <ImageButton
+            android:id="@+id/btnScanBarcode"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Scan Barcode"
+            android:src="@drawable/ic_barcode" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/Barcode_transaction">
+
+        <!-- RecyclerView for Transactions -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="509dp"
+            android:padding="5sp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Total Price TextView -->
+    <TextView
+        android:id="@+id/totalPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@android:color/holo_blue_dark"
+        android:gravity="center"
+        android:hint="Total"
+        android:padding="12dp"
+        android:text="Total"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/submitTransaction"
+        app:layout_constraintEnd_toEndOf="@+id/submitTransaction"
+        app:layout_constraintStart_toStartOf="@+id/submitTransaction" />
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/submitTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Submit Transaction"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
