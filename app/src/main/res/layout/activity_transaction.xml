@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
         android:text="Transaction Management"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/imageBack"
         app:layout_constraintStart_toEndOf="@+id/imageBack"
