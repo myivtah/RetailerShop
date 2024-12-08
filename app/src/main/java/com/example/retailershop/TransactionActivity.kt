@@ -2,6 +2,8 @@ package com.example.retailershop
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +13,7 @@ import com.example.retailershop.model.Product
 import com.google.firebase.database.*
 import com.google.zxing.integration.android.IntentIntegrator
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionListener {
@@ -19,6 +22,9 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var totalPriceText: TextView
+    private lateinit var cashPaidEdit: EditText
+    private lateinit var cashChangeText: TextView
+    private lateinit var btnConfirmTransaction: Button
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +34,9 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         productList = mutableListOf()
         recyclerView = findViewById(R.id.recyclerViewTransaction)
         totalPriceText = findViewById(R.id.totalPrice)
+        cashPaidEdit = findViewById(R.id.Cash)
+        cashChangeText = findViewById(R.id.totalKembalian)
+        btnConfirmTransaction = findViewById(R.id.submitTransaction)
 
         productAdapter = ProductAdapter(productList, this)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -40,90 +49,164 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         val btnScanBarcode = findViewById<ImageButton>(R.id.btnScanBarcode)
         val btnAddItem = findViewById<ImageButton>(R.id.tambahItemTransaksi)
 
-        // Ketika tombol Scan Barcode ditekan
         btnScanBarcode.setOnClickListener {
             launchBarcodeScanner()
         }
 
-        // Ketika tombol tambah item ditekan
         btnAddItem.setOnClickListener {
             val barcodeInput = inputBarcode.text.toString().trim()
-
-            // Memastikan barcode yang dimasukkan tidak kosong
             if (barcodeInput.isNotEmpty()) {
-                // Mencocokkan barcode dengan daftar produk di Firebase
                 findProductByBarcode(barcodeInput)
             } else {
                 Toast.makeText(this, "Please enter a barcode", Toast.LENGTH_SHORT).show()
             }
         }
+
+        cashPaidEdit.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                updateCashChange()
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        btnConfirmTransaction.setOnClickListener {
+            checkStockAndSubmitTransaction()
+        }
     }
 
-    // Fungsi untuk mencari produk berdasarkan barcode dari Firebase Realtime Database
     private fun findProductByBarcode(barcode: String) {
-        // Mengambil referensi ke node items di Firebase Realtime Database
         val productRef = database.child("items").child(barcode)
-
-        // Membaca data produk berdasarkan barcode
         productRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Jika data ditemukan, ambil informasi produk
                 if (snapshot.exists()) {
                     val name = snapshot.child("name").getValue(String::class.java)
                     val price = snapshot.child("price").getValue(Int::class.java) ?: 0
-
-                    // Membuat objek Product dengan quantity default 1
-                    val foundProduct = Product(
-                        barcode,
-                        name ?: "Unknown",
-                        price,
-                        1 // Set default quantity to 1
-                    )
-
-                    // Menambahkan produk ke daftar produk yang ditampilkan di RecyclerView
+                    val foundProduct = Product(barcode, name ?: "Unknown", price, 1)
                     productList.add(foundProduct)
                     productAdapter.notifyDataSetChanged()
-
-                    // Mengupdate total harga
-                    updateTotalPrice()
-
+                    updateTotal()
                 } else {
-                    // Jika produk tidak ditemukan
                     Toast.makeText(this@TransactionActivity, "Product not found", Toast.LENGTH_SHORT).show()
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@TransactionActivity, "Failed to fetch product data", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Fungsi untuk menghitung total harga berdasarkan produk di RecyclerView
-    private fun updateTotalPrice() {
-        var total = 0
-        for (product in productList) {
-            total += product.price * product.quantity
+    private fun updateTotal() {
+        totalPriceText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(calculateTotalPrice())
+        updateCashChange()
+    }
+
+    private fun calculateTotalPrice(): Int {
+        return productList.sumBy { it.price * it.quantity }
+    }
+
+    private fun calculateCashChange(): Int {
+        val totalPrice = calculateTotalPrice()
+        val cashPaid = cashPaidEdit.text.toString().toIntOrNull() ?: 0
+        return cashPaid - totalPrice
+    }
+
+    private fun updateCashChange() {
+        cashChangeText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(calculateCashChange())
+    }
+
+    private fun checkStockAndSubmitTransaction() {
+        val totalPrice = calculateTotalPrice()
+        val cashPaid = cashPaidEdit.text.toString().toIntOrNull() ?: 0
+
+        if (cashPaid < totalPrice) {
+            Toast.makeText(this, "Cash tidak cukup", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        // Format total dengan simbol Rupiah dan pemisah ribuan
-        val formattedTotal = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(total)
-        totalPriceText.text = "Total: $formattedTotal"
+        val allStockAvailable = productList.all { product ->
+            val productRef = database.child("items").child(product.barcode)
+            var stockAvailable = true
+            productRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val stockQuantity = snapshot.child("quantity").getValue(Int::class.java) ?: 0
+                        when {
+                            product.quantity < stockQuantity -> {
+                                productRef.child("quantity").setValue(stockQuantity - product.quantity)
+                            }
+                            product.quantity == stockQuantity -> {
+                                productRef.removeValue()
+                            }
+                            else -> {
+                                stockAvailable = false
+                                Toast.makeText(this@TransactionActivity, "Stok ${product.name} lebih sedikit", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        stockAvailable = false
+                        Toast.makeText(this@TransactionActivity, "Product not found: ${product.name}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    stockAvailable = false
+                    Toast.makeText(this@TransactionActivity, "Failed to fetch product data", Toast.LENGTH_SHORT).show()
+                }
+            })
+            stockAvailable
+        }
+
+        if (allStockAvailable) {
+            saveTransactionToDatabase()
+        }
     }
 
-    // Menangani perubahan kuantitas produk
+    private fun saveTransactionToDatabase() {
+        // Menentukan id transaksi sebagai nomor urut
+        database.child("transactions").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val transactionId = (snapshot.childrenCount + 1).toString()
+                val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+
+                val transactionData = HashMap<String, Any>().apply {
+                    put("id", transactionId)
+                    put("productList", productList.map { it.toMap() })
+                    put("totalPrice", calculateTotalPrice())
+                    put("cashPaid", NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashPaidEdit.text.toString().toIntOrNull() ?: 0))
+                    put("cashChange", NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(calculateCashChange()))
+                    put("transactionDate", currentTime)
+                }
+
+                database.child("transactions").child(transactionId).setValue(transactionData)
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            // Berhasil disimpan, pindah ke SubmittedActivity
+                            val intent = Intent(this@TransactionActivity, SubmittedActivity::class.java)
+                            intent.putExtra("transactionId", transactionId)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this@TransactionActivity, "Failed to submit transaction", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@TransactionActivity, "Failed to fetch transaction data", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     override fun onQuantityChanged(product: Product) {
-        updateTotalPrice()
+        updateTotal()
     }
 
-    // Menangani penghapusan produk dari transaksi
     override fun onProductDeleted(product: Product) {
         productList.remove(product)
         productAdapter.notifyDataSetChanged()
-        updateTotalPrice()
+        updateTotal()
     }
 
-    // Memulai barcode scanner
     private fun launchBarcodeScanner() {
         val integrator = IntentIntegrator(this)
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
@@ -132,7 +215,6 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         integrator.initiateScan()
     }
 
-    // Menangani hasil dari barcode scanner
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
