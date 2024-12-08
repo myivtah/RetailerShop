@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/background_gradient"
+    tools:context=".InputMember">
+
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/imageBack_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_back"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- EditText for member name -->
+    <EditText
+        android:id="@+id/memberName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Member Name"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintTop_toBottomOf="@id/imageBack_member"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <!-- EditText for member email -->
+    <EditText
+        android:id="@+id/memberEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Member Email"
+        android:inputType="textEmailAddress"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintTop_toBottomOf="@id/memberName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <!-- EditText for member phone -->
+    <EditText
+        android:id="@+id/memberPhone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Member Phone"
+        android:inputType="phone"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintTop_toBottomOf="@id/memberEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <!-- EditText for member address -->
+    <EditText
+        android:id="@+id/memberAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Member Address"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_background"
+        app:layout_constraintTop_toBottomOf="@id/memberPhone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <!-- Button to add a new member -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Member"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/memberAddress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- RecyclerView for displaying member list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_members"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="12dp"
+        android:background="@color/white"
+        android:padding="12sp"
+        app:layout_constraintTop_toBottomOf="@id/addMember"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
