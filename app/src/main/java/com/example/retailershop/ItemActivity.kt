@@ -10,8 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.ItemAdapter
 import com.example.retailershop.model.Item
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class ItemActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -41,8 +40,8 @@ class ItemActivity : AppCompatActivity() {
 
         recyclerView.adapter = adapter
 
-        // Get items from Firebase
-        getItemsFromDatabase()
+        // Set up real-time listener for Firebase
+        setupRealtimeListener()
 
         // Set click listener for Add Item button
         btnAddItem.setOnClickListener {
@@ -52,20 +51,24 @@ class ItemActivity : AppCompatActivity() {
         }
     }
 
-    private fun getItemsFromDatabase() {
-        database.get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                val itemsList = mutableListOf<Item>()
-                for (itemSnapshot in snapshot.children) {
-                    val item = itemSnapshot.getValue(Item::class.java)
-                    item?.let { itemsList.add(it) }
+    private fun setupRealtimeListener() {
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val itemsList = mutableListOf<Item>()
+                    for (itemSnapshot in snapshot.children) {
+                        val item = itemSnapshot.getValue(Item::class.java)
+                        item?.let { itemsList.add(it) }
+                    }
+                    adapter.updateItems(itemsList)
+                } else {
+                    Toast.makeText(this@ItemActivity, "No items found", Toast.LENGTH_SHORT).show()
                 }
-                adapter.updateItems(itemsList)
-            } else {
-                Toast.makeText(this, "No items found", Toast.LENGTH_SHORT).show()
             }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Failed to retrieve data", Toast.LENGTH_SHORT).show()
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ItemActivity, "Failed to retrieve data", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

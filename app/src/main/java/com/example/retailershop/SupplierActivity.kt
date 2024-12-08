@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.SupplierAdapter
 import com.example.retailershop.model.Supplier
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class SupplierActivity : AppCompatActivity() {
 
@@ -33,7 +31,7 @@ class SupplierActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance().reference.child("suppliers")
 
         // Fetch suppliers from Firebase
-        fetchSuppliers()
+        setupRealtimeListener()
 
         // Set up the add supplier button
         val btnAddSupplier = findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_add_supplier)
@@ -43,9 +41,9 @@ class SupplierActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchSuppliers() {
+    private fun setupRealtimeListener() {
         database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 suppliersList.clear()
                 for (supplierSnapshot in snapshot.children) {
                     val supplier = supplierSnapshot.getValue(Supplier::class.java)
@@ -56,7 +54,7 @@ class SupplierActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
 
-            override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@SupplierActivity, "Gagal memuat data supplier", Toast.LENGTH_SHORT).show()
             }
         })
