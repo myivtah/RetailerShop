@@ -32,11 +32,42 @@ class ProductAdapter(
 
         // Menampilkan nama produk, harga, dan kuantitas
         holder.nameTextView.text = product.name
-        holder.quantityTextView.text = "Qty: ${product.quantity}"
 
-        // Format harga dengan Rupiah
-        val formattedPrice = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(product.price)
-        holder.priceTextView.text = "Price: $formattedPrice"
+        // Format harga menjadi integer tanpa desimal
+        val formattedPrice = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+            maximumFractionDigits = 0
+        }.format(product.price)
+
+        holder.priceTextView.text = formattedPrice
+        holder.quantityEditText.setText(product.quantity.toString())
+
+        // Menghapus TextWatcher sebelumnya untuk mencegah rekursi
+        holder.quantityEditText.tag?.let {
+            holder.quantityEditText.removeTextChangedListener(it as TextWatcher)
+        }
+
+        // Menambahkan TextWatcher baru
+        val textWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (!s.isNullOrEmpty()) {
+                    try {
+                        val newQuantity = s.toString().toInt()
+                        if (newQuantity > 0) {
+                            product.quantity = newQuantity
+                            listener.onQuantityChanged(product)
+                        }
+                    } catch (e: NumberFormatException) {
+                        holder.quantityEditText.setText(product.quantity.toString())
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+
+        holder.quantityEditText.addTextChangedListener(textWatcher)
+        holder.quantityEditText.tag = textWatcher
 
         // Menambahkan event listener untuk tombol tambah dan kurang kuantitas
         holder.increaseQuantityButton.setOnClickListener {
@@ -53,29 +84,6 @@ class ProductAdapter(
             }
         }
 
-        // Menambahkan listener pada EditText untuk mengubah kuantitas
-        holder.quantityEditText.setText(product.quantity.toString())  // Set initial quantity
-        holder.quantityEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (!s.isNullOrEmpty()) {
-                    try {
-                        val newQuantity = s.toString().toInt()
-                        if (newQuantity > 0) {
-                            product.quantity = newQuantity
-                            listener.onQuantityChanged(product)
-                        }
-                    } catch (e: NumberFormatException) {
-                        // Jika input bukan angka, biarkan kosong
-                        holder.quantityEditText.setText(product.quantity.toString())
-                    }
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
         // Tombol hapus produk
         holder.deleteButton.setOnClickListener {
             listener.onProductDeleted(product)
@@ -89,10 +97,9 @@ class ProductAdapter(
     inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.productName)
         val priceTextView: TextView = itemView.findViewById(R.id.productPrice)
-        val quantityTextView: TextView = itemView.findViewById(R.id.ev_quantity)
+        val quantityEditText: EditText = itemView.findViewById(R.id.ev_quantity)
         val increaseQuantityButton: ImageButton = itemView.findViewById(R.id.btn_increment)
         val decreaseQuantityButton: ImageButton = itemView.findViewById(R.id.btn_decrement)
-        val quantityEditText: EditText = itemView.findViewById(R.id.ev_quantity)  // EditText untuk kuantitas
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteItem)
     }
 }

@@ -128,7 +128,8 @@ class InputActivity : AppCompatActivity() {
         val supplier = selectedSupplier?.name ?: "Unknown"
 
         // Create an Item object with the updated data
-        val item = Item(codebar, name, price, purchasePrice, quantity, date, supplier)
+        val item = Item(codebar, name,
+            price.toInt(), purchasePrice.toInt(), quantity, date, supplier)
 
         // If itemId exists, update the existing item, otherwise create a new one
         if (itemId != null) {

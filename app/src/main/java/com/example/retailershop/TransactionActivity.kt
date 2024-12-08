@@ -1,6 +1,5 @@
 package com.example.retailershop
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
@@ -71,15 +70,14 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
                 // Jika data ditemukan, ambil informasi produk
                 if (snapshot.exists()) {
                     val name = snapshot.child("name").getValue(String::class.java)
-                    val price = snapshot.child("price").getValue(Double::class.java) ?: 0.0
-                    val quantity = snapshot.child("quantity").getValue(Int::class.java) ?: 1
+                    val price = snapshot.child("price").getValue(Int::class.java) ?: 0
 
-                    // Membuat objek Product
+                    // Membuat objek Product dengan quantity default 1
                     val foundProduct = Product(
                         barcode,
                         name ?: "Unknown",
                         price,
-                        quantity
+                        1 // Set default quantity to 1
                     )
 
                     // Menambahkan produk ke daftar produk yang ditampilkan di RecyclerView
@@ -103,7 +101,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
 
     // Fungsi untuk menghitung total harga berdasarkan produk di RecyclerView
     private fun updateTotalPrice() {
-        var total = 0.0
+        var total = 0
         for (product in productList) {
             total += product.price * product.quantity
         }

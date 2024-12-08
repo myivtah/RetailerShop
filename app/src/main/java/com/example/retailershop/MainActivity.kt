@@ -25,11 +25,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SupplierActivity::class.java))
         }
 
-        // CardView Aktivitas
-        findViewById<CardView>(R.id.cardActivity).setOnClickListener {
-            startActivity(Intent(this, ActivitiesActivity::class.java))
-        }
-
         // CardView Membership
         findViewById<CardView>(R.id.cardMember).setOnClickListener {
             startActivity(Intent(this, MemberActivity::class.java))

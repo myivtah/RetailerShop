@@ -1,8 +1,8 @@
 package com.example.retailershop.model
 
 data class Product(
-    val barcode: String,  // Properti barcode
+    val barcode: String,
     val name: String,
-    val price: Double,
+    val price: Int,
     var quantity: Int = 0
 )

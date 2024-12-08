@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
 
         <!-- Supplier Name -->
         <TextView
@@ -19,12 +20,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Supplier Name"
-            android:textSize="16sp"
+            android:textSize="25sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@id/linearSupplier"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="20dp"/>
 
         <!-- Supplier Phone -->
         <TextView
@@ -34,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="Supplier Phone"
-            android:textSize="14sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/linearSupplier"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_supplier_name" />
@@ -54,6 +55,7 @@
                 android:id="@+id/btn_edit_supplier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:src="@drawable/ic_edit"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Edit Supplier"
@@ -65,6 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_delete"
+                android:layout_margin="10dp"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Delete Supplier"
                 android:layout_marginBottom="12dp" />
