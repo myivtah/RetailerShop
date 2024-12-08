@@ -1,8 +1,9 @@
 package com.example.retailershop.model
 
-data class Supplier(
+data class Member(
     val id: String = "",
     val name: String = "",
+    val email: String = "",
     val phone: String = "",
-    val userEmail: String = ""
+    val address: String = ""
 )

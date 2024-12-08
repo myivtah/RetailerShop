@@ -72,6 +72,8 @@ class RegisterActivity : AppCompatActivity() {
                 database.reference.child("akun").child(keyCode).setValue(userData).addOnCompleteListener { dbTask ->
                     if (dbTask.isSuccessful) {
                         Toast.makeText(this, "Registration successful, please login", Toast.LENGTH_SHORT).show()
+                        auth.signOut()  // Logout setelah registrasi
+                        // Mengarahkan pengguna ke LoginActivity
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent)
                         finish()

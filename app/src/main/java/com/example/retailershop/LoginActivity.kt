@@ -22,6 +22,13 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 
+        // If user is already logged in, navigate to MainActivity
+        if (auth.currentUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
         binding.loginButton.setOnClickListener {
             val email = binding.emailLogin.text.toString().trim()
             val password = binding.passwordLogin.text.toString().trim()

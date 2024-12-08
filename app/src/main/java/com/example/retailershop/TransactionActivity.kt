@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.ProductAdapter
 import com.example.retailershop.model.Product
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.zxing.integration.android.IntentIntegrator
 import java.text.NumberFormat
@@ -26,10 +27,15 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
     private lateinit var cashChangeText: TextView
     private lateinit var btnConfirmTransaction: Button
     private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private var userEmail: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
+
+        auth = FirebaseAuth.getInstance()
+        userEmail = auth.currentUser?.email
 
         productList = mutableListOf()
         recyclerView = findViewById(R.id.recyclerViewTransaction)
@@ -163,6 +169,12 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
     }
 
     private fun saveTransactionToDatabase() {
+        val currentEmail = userEmail
+        if (currentEmail == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         // Menentukan id transaksi sebagai nomor urut
         database.child("transactions").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -176,6 +188,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
                     put("cashPaid", NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashPaidEdit.text.toString().toIntOrNull() ?: 0))
                     put("cashChange", NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(calculateCashChange()))
                     put("transactionDate", currentTime)
+                    put("userEmail", currentEmail) // Menyimpan email pengguna yang sedang login
                 }
 
                 database.child("transactions").child(transactionId).setValue(transactionData)

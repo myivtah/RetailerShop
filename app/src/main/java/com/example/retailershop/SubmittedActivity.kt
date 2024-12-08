@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.SubmittedAdapter
 import com.example.retailershop.model.Product
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.NumberFormat
 import java.util.*
@@ -25,10 +26,13 @@ class SubmittedActivity : AppCompatActivity() {
     private lateinit var cashChangeText: TextView
     private lateinit var btnConfirmSubmission: Button
     private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_submitted)
+
+        auth = FirebaseAuth.getInstance()
 
         // Initialize views
         transactionId = intent.getStringExtra("transactionId") ?: return
@@ -61,25 +65,31 @@ class SubmittedActivity : AppCompatActivity() {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    val userEmail = auth.currentUser?.email
                     snapshot.getValue(object : GenericTypeIndicator<HashMap<String, Any>>() {})?.let {
-                        val productListData = it["productList"] as List<HashMap<String, Any>>
-                        productList.addAll(productListData.map { productMap ->
-                            Product(
-                                productMap["barcode"] as String,
-                                productMap["name"] as String,
-                                (productMap["price"] as Long).toInt(),
-                                (productMap["quantity"] as Long).toInt()
-                            )
-                        })
-                        submittedAdapter.notifyDataSetChanged()
+                        if (it["userEmail"] == userEmail) {
+                            val productListData = it["productList"] as List<HashMap<String, Any>>
+                            productList.addAll(productListData.map { productMap ->
+                                Product(
+                                    productMap["barcode"] as String,
+                                    productMap["name"] as String,
+                                    (productMap["price"] as Long).toInt(),
+                                    (productMap["quantity"] as Long).toInt()
+                                )
+                            })
+                            submittedAdapter.notifyDataSetChanged()
 
-                        val totalPrice = it["totalPrice"].toString().toLongOrNull() ?: 0L
-                        val cashPaid = convertCurrencyStringToLong(it["cashPaid"].toString())
-                        val cashChange = convertCurrencyStringToLong(it["cashChange"].toString())
+                            val totalPrice = it["totalPrice"].toString().toLongOrNull() ?: 0L
+                            val cashPaid = convertCurrencyStringToLong(it["cashPaid"].toString())
+                            val cashChange = convertCurrencyStringToLong(it["cashChange"].toString())
 
-                        totalPriceText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(totalPrice)
-                        cashPaidText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashPaid)
-                        cashChangeText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashChange)
+                            totalPriceText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(totalPrice)
+                            cashPaidText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashPaid)
+                            cashChangeText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashChange)
+                        } else {
+                            Toast.makeText(this@SubmittedActivity, "Access denied", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
                     }
                 } else {
                     Toast.makeText(this@SubmittedActivity, "Transaction data not found", Toast.LENGTH_SHORT).show()

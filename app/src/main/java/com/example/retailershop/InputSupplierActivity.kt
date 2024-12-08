@@ -20,6 +20,7 @@ class InputSupplierActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var lastIdReference: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private var userEmail: String? = null
 
     private var supplierId: String? = null // For editing an existing supplier
 
@@ -35,6 +36,7 @@ class InputSupplierActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth and Database reference
         auth = FirebaseAuth.getInstance()
+        userEmail = auth.currentUser?.email
         database = FirebaseDatabase.getInstance().reference.child("suppliers")
         lastIdReference = FirebaseDatabase.getInstance().reference.child("last_supplier_id")
 
@@ -73,6 +75,12 @@ class InputSupplierActivity : AppCompatActivity() {
 
     // Function to add a new supplier
     private fun addSupplier(name: String, phone: String) {
+        val currentEmail = userEmail
+        if (currentEmail == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         // Get the last used ID
         lastIdReference.get().addOnSuccessListener { snapshot ->
             var newId = 1
@@ -86,7 +94,7 @@ class InputSupplierActivity : AppCompatActivity() {
             lastIdReference.setValue(newId)
 
             // Create a new Supplier with the incremented ID
-            val newSupplier = Supplier(newId.toString(), name, phone)
+            val newSupplier = Supplier(newId.toString(), name, phone, currentEmail)
 
             // Save the new supplier to Firebase directly under "suppliers"
             database.child(newId.toString()).setValue(newSupplier).addOnCompleteListener {
@@ -102,7 +110,13 @@ class InputSupplierActivity : AppCompatActivity() {
 
     // Function to update an existing supplier
     private fun updateSupplier(id: String, name: String, phone: String) {
-        val updatedSupplier = Supplier(id, name, phone)
+        val currentEmail = userEmail
+        if (currentEmail == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val updatedSupplier = Supplier(id, name, phone, currentEmail)
 
         // Update the supplier under "suppliers" with the supplier's ID
         database.child(id).setValue(updatedSupplier).addOnCompleteListener {

@@ -8,22 +8,30 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.retailershop.model.Item
 import com.example.retailershop.model.Supplier
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.zxing.integration.android.IntentIntegrator
 import java.util.*
 
-class InputActivity : AppCompatActivity() {
+class InputItemActivity : AppCompatActivity() {
+
     private lateinit var database: DatabaseReference
     private var itemId: String? = null
     private var selectedSupplier: Supplier? = null
+    private lateinit var auth: FirebaseAuth
+    private var userEmail: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_input)
+        setContentView(R.layout.activity_input_item)
 
+        // Initialize Firebase Realtime Database and Auth
         database = Firebase.database.reference.child("items")
+        auth = FirebaseAuth.getInstance()
+        userEmail = auth.currentUser?.email
+
         itemId = intent.getStringExtra("item_id")
 
         // If there's an itemId, load the item data from Firebase
@@ -127,9 +135,14 @@ class InputActivity : AppCompatActivity() {
         val date = findViewById<EditText>(R.id.et_tanggal_input).text.toString()
         val supplier = selectedSupplier?.name ?: "Unknown"
 
+        val userEmail = this.userEmail
+        if (userEmail == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         // Create an Item object with the updated data
-        val item = Item(codebar, name,
-            price.toInt(), purchasePrice.toInt(), quantity, date, supplier)
+        val item = Item(codebar, name, price.toInt(), purchasePrice.toInt(), quantity, date, supplier, userEmail)
 
         // If itemId exists, update the existing item, otherwise create a new one
         if (itemId != null) {

@@ -7,5 +7,6 @@ data class Item(
     val purchasePrice: Int = 0,
     val quantity: Int = 0,
     val date: String = "",
-    val supplier: String = ""
+    val supplier: String = "",
+    val userEmail: String = "" // Menambahkan properti userEmail
 )

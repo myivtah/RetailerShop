@@ -22,7 +22,10 @@
             android:name=".InputSupplierActivity"
             android:exported="false" />
         <activity
-            android:name=".ActivitiesActivity"
+            android:name=".SubmittedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InputMemberActivity"
             android:exported="false" />
         <activity
             android:name=".MemberActivity"
@@ -31,10 +34,7 @@
             android:name=".SupplierActivity"
             android:exported="false" />
         <activity
-            android:name=".EditItemActivity"
-            android:exported="false" />
-        <activity
-            android:name=".InputActivity"
+            android:name=".InputItemActivity"
             android:exported="false" />
         <activity
             android:name=".TransactionActivity"

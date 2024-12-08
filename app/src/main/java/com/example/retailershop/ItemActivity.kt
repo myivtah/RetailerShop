@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.ItemAdapter
 import com.example.retailershop.model.Item
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 class ItemActivity : AppCompatActivity() {
@@ -17,13 +18,15 @@ class ItemActivity : AppCompatActivity() {
     private lateinit var adapter: ItemAdapter
     private lateinit var database: DatabaseReference
     private lateinit var btnAddItem: Button
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_item)
 
-        // Initialize RecyclerView, Button, and Firebase Database
+        // Initialize Firebase Auth, RecyclerView, Button, and Firebase Database
+        auth = FirebaseAuth.getInstance()
         recyclerView = findViewById(R.id.rv_items)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -46,13 +49,15 @@ class ItemActivity : AppCompatActivity() {
         // Set click listener for Add Item button
         btnAddItem.setOnClickListener {
             // Navigate to InputActivity for adding new item
-            val intent = Intent(this, InputActivity::class.java)
+            val intent = Intent(this, InputItemActivity::class.java)
             startActivity(intent)
         }
     }
 
     private fun setupRealtimeListener() {
-        database.addValueEventListener(object : ValueEventListener {
+        val userEmail = auth.currentUser?.email ?: return
+
+        database.orderByChild("userEmail").equalTo(userEmail).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val itemsList = mutableListOf<Item>()

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.retailershop.InputActivity
+import com.example.retailershop.InputItemActivity
 import com.example.retailershop.model.Item
 import com.google.firebase.database.FirebaseDatabase
 import com.example.retailershop.R
@@ -38,7 +38,7 @@ abstract class ItemAdapter(private var items: MutableList<Item>) : RecyclerView.
         holder.tvDate.text = item.date
 
         holder.btnEdit.setOnClickListener {
-            val intent = Intent(holder.itemView.context, InputActivity::class.java)
+            val intent = Intent(holder.itemView.context, InputItemActivity::class.java)
             intent.putExtra("item_id", item.codebar) // Pass the codebar (ID) to InputActivity
             holder.itemView.context.startActivity(intent)
         }

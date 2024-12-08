@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.SupplierAdapter
 import com.example.retailershop.model.Supplier
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 class SupplierActivity : AppCompatActivity() {
@@ -16,12 +17,14 @@ class SupplierActivity : AppCompatActivity() {
     private lateinit var adapter: SupplierAdapter
     private lateinit var database: DatabaseReference
     private lateinit var suppliersList: MutableList<Supplier>
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_supplier)
 
-        // Initialize RecyclerView and Database reference
+        // Initialize Firebase Auth, RecyclerView, and Database reference
+        auth = FirebaseAuth.getInstance()
         recyclerView = findViewById(R.id.rv_suppliers)
         recyclerView.layoutManager = LinearLayoutManager(this)
         suppliersList = mutableListOf()
@@ -42,7 +45,9 @@ class SupplierActivity : AppCompatActivity() {
     }
 
     private fun setupRealtimeListener() {
-        database.addValueEventListener(object : ValueEventListener {
+        val userEmail = auth.currentUser?.email ?: return
+
+        database.orderByChild("userEmail").equalTo(userEmail).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 suppliersList.clear()
                 for (supplierSnapshot in snapshot.children) {
