@@ -4,21 +4,16 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
-import com.example.retailershop.R
-import com.example.retailershop.model.Supplier
 import com.example.retailershop.InputSupplierActivity
+import com.example.retailershop.R
+import com.example.retailershop.SupplierActivity
+import com.example.retailershop.model.Supplier
 
 class SupplierAdapter(private val suppliers: MutableList<Supplier>) : RecyclerView.Adapter<SupplierAdapter.SupplierViewHolder>() {
-
-    inner class SupplierViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName: TextView = view.findViewById(R.id.tv_supplier_name)
-        val tvPhone: TextView = view.findViewById(R.id.tv_supplier_phone)
-        val btnEdit: ImageButton = view.findViewById(R.id.btn_edit_supplier)
-        val btnDelete: ImageButton = view.findViewById(R.id.btn_delete_supplier)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupplierViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card_view_supplier, parent, false)
@@ -27,27 +22,34 @@ class SupplierAdapter(private val suppliers: MutableList<Supplier>) : RecyclerVi
 
     override fun onBindViewHolder(holder: SupplierViewHolder, position: Int) {
         val supplier = suppliers[position]
-        holder.tvName.text = supplier.name
-        holder.tvPhone.text = supplier.phone
-
-        // Edit supplier onClick
-        holder.btnEdit.setOnClickListener {
-            val intent = Intent(holder.itemView.context, InputSupplierActivity::class.java)
-            intent.putExtra("supplier_id", supplier.id)
-            holder.itemView.context.startActivity(intent)
-        }
-
-        // Delete supplier onClick
-        holder.btnDelete.setOnClickListener {
-            // Implement delete logic
-        }
+        holder.bind(supplier)
     }
 
     override fun getItemCount(): Int = suppliers.size
 
-    fun updateSuppliers(newSuppliers: List<Supplier>) {
-        suppliers.clear()
-        suppliers.addAll(newSuppliers)
-        notifyDataSetChanged()
+    inner class SupplierViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvName: TextView = itemView.findViewById(R.id.tv_supplier_name)
+        private val tvPhone: TextView = itemView.findViewById(R.id.tv_supplier_phone)
+        private val btnEdit: AppCompatImageButton = itemView.findViewById(R.id.btn_edit_supplier) // Ganti menjadi AppCompatImageButton
+        private val btnDelete: AppCompatImageButton = itemView.findViewById(R.id.btn_delete_supplier) // Ganti menjadi AppCompatImageButton
+
+        fun bind(supplier: Supplier) {
+            tvName.text = supplier.name
+            tvPhone.text = supplier.phone
+
+            // Edit Supplier
+            btnEdit.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, InputSupplierActivity::class.java)
+                intent.putExtra("supplier_id", supplier.id)
+                context.startActivity(intent)
+            }
+
+            // Delete Supplier
+            btnDelete.setOnClickListener {
+                (itemView.context as SupplierActivity).deleteSupplier(supplier.id)
+            }
+        }
     }
+
 }

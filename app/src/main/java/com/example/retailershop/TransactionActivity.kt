@@ -1,10 +1,12 @@
 package com.example.retailershop
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +38,12 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
 
         auth = FirebaseAuth.getInstance()
         userEmail = auth.currentUser?.email
+
+        if (userEmail == null) {
+            // Jika tidak ada pengguna yang login, arahkan ke halaman login
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         productList = mutableListOf()
         recyclerView = findViewById(R.id.recyclerViewTransaction)
@@ -77,12 +85,12 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         })
 
         btnConfirmTransaction.setOnClickListener {
-            checkStockAndSubmitTransaction()
+            checkTransactionLimitAndKeyCode(userEmail ?: "")
         }
     }
 
     private fun findProductByBarcode(barcode: String) {
-        val productRef = database.child("items").child(barcode)
+        val productRef = database.child("items").child(barcode).child(userEmail?.replace(".", "_") ?: "")
         productRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -96,6 +104,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
                     Toast.makeText(this@TransactionActivity, "Product not found", Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@TransactionActivity, "Failed to fetch product data", Toast.LENGTH_SHORT).show()
             }
@@ -121,51 +130,58 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         cashChangeText.text = NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(calculateCashChange())
     }
 
-    private fun checkStockAndSubmitTransaction() {
-        val totalPrice = calculateTotalPrice()
-        val cashPaid = cashPaidEdit.text.toString().toIntOrNull() ?: 0
-
-        if (cashPaid < totalPrice) {
-            Toast.makeText(this, "Cash tidak cukup", Toast.LENGTH_SHORT).show()
+    private fun checkTransactionLimitAndKeyCode(currentEmail: String) {
+        if (currentEmail.isEmpty()) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val allStockAvailable = productList.all { product ->
-            val productRef = database.child("items").child(product.barcode)
-            var stockAvailable = true
-            productRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val stockQuantity = snapshot.child("quantity").getValue(Int::class.java) ?: 0
-                        when {
-                            product.quantity < stockQuantity -> {
-                                productRef.child("quantity").setValue(stockQuantity - product.quantity)
-                            }
-                            product.quantity == stockQuantity -> {
-                                productRef.removeValue()
-                            }
-                            else -> {
-                                stockAvailable = false
-                                Toast.makeText(this@TransactionActivity, "Stok ${product.name} lebih sedikit", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    } else {
-                        stockAvailable = false
-                        Toast.makeText(this@TransactionActivity, "Product not found: ${product.name}", Toast.LENGTH_SHORT).show()
-                    }
+        val transactionsRef = database.child("transactions").orderByChild("userEmail").equalTo(currentEmail)
+        transactionsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val transactionCount = snapshot.childrenCount
+                if (transactionCount >= 20) {
+                    checkForKeyCodeAndProceed(currentEmail)
+                } else {
+                    validateAndSaveTransaction()
                 }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    stockAvailable = false
-                    Toast.makeText(this@TransactionActivity, "Failed to fetch product data", Toast.LENGTH_SHORT).show()
-                }
-            })
-            stockAvailable
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@TransactionActivity, "Failed to fetch transaction count", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun validateAndSaveTransaction() {
+        val cashPaid = cashPaidEdit.text.toString().toIntOrNull() ?: 0
+        val totalPrice = calculateTotalPrice()
+
+        if (cashPaid < totalPrice) {
+            Toast.makeText(this, "Cash paid must be equal to or greater than total price", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        if (allStockAvailable) {
-            saveTransactionToDatabase()
-        }
+        saveTransactionToDatabase()
+    }
+
+    private fun checkForKeyCodeAndProceed(currentEmail: String) {
+        val userRef = database.child("akun").child(currentEmail.replace(".", "_"))
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val keyCode = snapshot.child("keyCode").getValue(String::class.java)
+
+                if (keyCode == null) {
+                    showSubscriptionNotificationDialog()
+                } else {
+                    saveTransactionToDatabase()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@TransactionActivity, "Failed to fetch user data", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun saveTransactionToDatabase() {
@@ -175,7 +191,6 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
             return
         }
 
-        // Menentukan id transaksi sebagai nomor urut
         database.child("transactions").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val transactionId = (snapshot.childrenCount + 1).toString()
@@ -194,10 +209,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
                 database.child("transactions").child(transactionId).setValue(transactionData)
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
-                            // Berhasil disimpan, pindah ke SubmittedActivity
-                            val intent = Intent(this@TransactionActivity, SubmittedActivity::class.java)
-                            intent.putExtra("transactionId", transactionId)
-                            startActivity(intent)
+                            reduceStockAndProceed(transactionId)
                         } else {
                             Toast.makeText(this@TransactionActivity, "Failed to submit transaction", Toast.LENGTH_SHORT).show()
                         }
@@ -208,6 +220,49 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
                 Toast.makeText(this@TransactionActivity, "Failed to fetch transaction data", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun reduceStockAndProceed(transactionId: String) {
+        for (product in productList) {
+            val productRef = database.child("items").child(product.barcode).child(userEmail?.replace(".", "_") ?: "")
+            productRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val currentStock = snapshot.child("quantity").getValue(Int::class.java) ?: 0
+                    val updatedStock = currentStock - product.quantity
+
+                    productRef.child("quantity").setValue(updatedStock)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                if (productList.indexOf(product) == productList.size - 1) {
+                                    val intent = Intent(this@TransactionActivity, SubmittedActivity::class.java)
+                                    intent.putExtra("transactionId", transactionId)
+                                    startActivity(intent)
+                                }
+                            } else {
+                                Toast.makeText(this@TransactionActivity, "Failed to update stock for product ${product.name}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@TransactionActivity, "Failed to fetch product stock", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+    }
+
+    private fun showSubscriptionNotificationDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage("Transaksi Anda lebih dari 20. Silakan hubungi admin untuk melanjutkan langganan.")
+            .setCancelable(false)
+            .setPositiveButton("Hubungi Admin") { _, _ ->
+                val phoneNumber = "628970990504"
+                val message = "Halo Admin, saya ingin melanjutkan transaksi lebih dari 20 item. Mohon bantuannya."
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encode(message)}"))
+                startActivity(intent)
+            }
+        val alertDialog = dialogBuilder.create()
+        alertDialog.show()
     }
 
     override fun onQuantityChanged(product: Product) {

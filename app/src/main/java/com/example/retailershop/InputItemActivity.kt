@@ -2,16 +2,15 @@ package com.example.retailershop
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.retailershop.model.Item
 import com.example.retailershop.model.Supplier
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.FirebaseDatabase
 import com.google.zxing.integration.android.IntentIntegrator
 import java.util.*
 
@@ -27,166 +26,88 @@ class InputItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input_item)
 
-        // Initialize Firebase Realtime Database and Auth
-        database = Firebase.database.reference.child("items")
+        database = FirebaseDatabase.getInstance().reference.child("items")
         auth = FirebaseAuth.getInstance()
         userEmail = auth.currentUser?.email
 
         itemId = intent.getStringExtra("item_id")
-
-        // If there's an itemId, load the item data from Firebase
         itemId?.let { loadItemData(it) }
 
-        // Load supplier data for the dropdown
         loadSuppliers()
-
-        // Set up the date picker
-        val etTanggal = findViewById<EditText>(R.id.et_tanggal_input)
-        etTanggal.setOnClickListener { showDateTimePicker(etTanggal) }
-
-        // Set up save button
+        findViewById<EditText>(R.id.et_tanggal_input).setOnClickListener { showDateTimePicker() }
         findViewById<Button>(R.id.btn_simpan_input).setOnClickListener { saveItem() }
+        findViewById<ImageButton>(R.id.btn_scan_barcode_input).setOnClickListener { launchBarcodeScanner() }
+    }
 
-        // Set up barcode scan button
-        findViewById<ImageButton>(R.id.btn_scan_barcode_input).setOnClickListener {
-            launchBarcodeScanner()
+    private fun loadItemData(barcode: String) {
+        val emailKey = userEmail!!.replace("@", "_").replace(".", "_")
+        val itemRef = database.child(emailKey).child(barcode)
+
+        itemRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val item = snapshot.getValue(Item::class.java)
+                item?.let {
+                    val etBarcode = findViewById<EditText>(R.id.et_id_item_input)
+                    etBarcode.setText(it.barcode)
+                    etBarcode.isEnabled = false
+
+                    findViewById<EditText>(R.id.et_nama_item_input).setText(it.name)
+                    findViewById<EditText>(R.id.et_harga_satuan_input).setText(it.price.toString())
+                    findViewById<EditText>(R.id.et_harga_satuan_beli_input).setText(it.purchasePrice.toString())
+                    findViewById<EditText>(R.id.et_quantity_input).setText(it.quantity.toString())
+                    findViewById<EditText>(R.id.et_tanggal_input).setText(it.date)
+                }
+            }
         }
     }
 
     private fun loadSuppliers() {
         val supplierList = mutableListOf<Supplier>()
-        val supplierNames = mutableListOf<String>()
+        val emailKey = userEmail!!.replace("@", "_").replace(".", "_")
+        val supplierRef = FirebaseDatabase.getInstance().reference.child("suppliers").child(emailKey)
 
-        // Reference to "suppliers" node in Firebase
-        val supplierRef = Firebase.database.reference.child("suppliers")
         supplierRef.get().addOnSuccessListener { snapshot ->
-            for (child in snapshot.children) {
-                val supplier = child.getValue(Supplier::class.java)
-                supplier?.let {
-                    supplierList.add(it)
-                    supplierNames.add(it.name)
-                }
-            }
-
-            val spinner = findViewById<Spinner>(R.id.spinner_suplier_input)
+            val supplierNames = snapshot.children.mapNotNull { it.getValue(Supplier::class.java)?.name }
             val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, supplierNames)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = adapter
-
-            // Handle supplier selection
-            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: android.view.View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    selectedSupplier = supplierList[position]
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    selectedSupplier = null
-                }
-            }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Failed to load suppliers", Toast.LENGTH_SHORT).show()
+            findViewById<Spinner>(R.id.spinner_suplier_input).adapter = adapter
         }
     }
 
-    private fun showDateTimePicker(editText: EditText) {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
-            val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
-
-            TimePickerDialog(this, { _, selectedHour, selectedMinute ->
-                val selectedTime = "$selectedHour:$selectedMinute"
-                editText.setText("$selectedDate $selectedTime")
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
-
-        }, year, month, day).show()
-    }
-
-    // Load item data from Firebase if itemId exists
-    private fun loadItemData(id: String) {
-        database.child(id).get().addOnSuccessListener {
-            val item = it.getValue(Item::class.java)
-            item?.let {
-                findViewById<EditText>(R.id.et_id_item_input).setText(it.codebar)
-                findViewById<EditText>(R.id.et_nama_item_input).setText(it.name)
-                findViewById<EditText>(R.id.et_harga_satuan_input).setText(it.price.toString())
-                findViewById<EditText>(R.id.et_harga_satuan_beli_input).setText(it.purchasePrice.toString())
-                findViewById<EditText>(R.id.et_quantity_input).setText(it.quantity.toString())
-                findViewById<EditText>(R.id.et_tanggal_input).setText(it.date)
-            }
-        }
-    }
-
-    // Save or update item
     private fun saveItem() {
-        val codebar = findViewById<EditText>(R.id.et_id_item_input).text.toString()
-        val name = findViewById<EditText>(R.id.et_nama_item_input).text.toString()
-        val price = findViewById<EditText>(R.id.et_harga_satuan_input).text.toString().toDoubleOrNull() ?: 0.0
-        val purchasePrice = findViewById<EditText>(R.id.et_harga_satuan_beli_input).text.toString().toDoubleOrNull() ?: 0.0
+        val barcode = findViewById<EditText>(R.id.et_id_item_input).text.toString().trim()
+        val name = findViewById<EditText>(R.id.et_nama_item_input).text.toString().trim()
+        val price = findViewById<EditText>(R.id.et_harga_satuan_input).text.toString().toIntOrNull() ?: 0
+        val purchasePrice = findViewById<EditText>(R.id.et_harga_satuan_beli_input).text.toString().toIntOrNull() ?: 0
         val quantity = findViewById<EditText>(R.id.et_quantity_input).text.toString().toIntOrNull() ?: 0
-        val date = findViewById<EditText>(R.id.et_tanggal_input).text.toString()
-        val supplier = selectedSupplier?.name ?: "Unknown"
+        val date = findViewById<EditText>(R.id.et_tanggal_input).text.toString().trim()
 
-        val userEmail = this.userEmail
-        if (userEmail == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+        if (barcode.isEmpty()) {
+            Toast.makeText(this, "Barcode tidak boleh kosong", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Create an Item object with the updated data
-        val item = Item(codebar, name, price.toInt(), purchasePrice.toInt(), quantity, date, supplier, userEmail)
+        val emailKey = userEmail!!.replace("@", "_").replace(".", "_")
+        val userItemsRef = database.child(emailKey).child(barcode)
+        val item = Item(barcode, name, price, purchasePrice, quantity, date, selectedSupplier?.name ?: "Unknown")
 
-        // If itemId exists, update the existing item, otherwise create a new one
-        if (itemId != null) {
-            database.child(itemId!!).setValue(item).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(this, "Item updated successfully", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    Toast.makeText(this, "Failed to update item", Toast.LENGTH_SHORT).show()
-                }
-            }
-        } else {
-            // If no itemId exists, it's a new item, add it
-            database.child(codebar).setValue(item).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(this, "Item saved successfully", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    Toast.makeText(this, "Failed to save item", Toast.LENGTH_SHORT).show()
-                }
-            }
+        userItemsRef.setValue(item).addOnCompleteListener {
+            Toast.makeText(this, "Item berhasil disimpan", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
-    // Launch the barcode scanner
+    private fun showDateTimePicker() {
+        val calendar = Calendar.getInstance()
+        DatePickerDialog(this, { _, year, month, day ->
+            val date = "$year-${month + 1}-$day"
+            findViewById<EditText>(R.id.et_tanggal_input).setText(date)
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
     private fun launchBarcodeScanner() {
         val integrator = IntentIntegrator(this)
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
-        integrator.setPrompt("Scan a barcode")
+        integrator.setPrompt("Scan Barcode")
         integrator.setBeepEnabled(true)
         integrator.initiateScan()
-    }
-
-    // Handle barcode scan result
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result != null) {
-            if (result.contents != null) {
-                findViewById<EditText>(R.id.et_id_item_input).setText(result.contents)
-            } else {
-                Toast.makeText(this, "Scan cancelled", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }

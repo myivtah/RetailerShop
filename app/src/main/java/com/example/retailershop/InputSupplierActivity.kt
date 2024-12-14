@@ -18,9 +18,7 @@ class InputSupplierActivity : AppCompatActivity() {
     private lateinit var btnSaveSupplier: Button
     private lateinit var imageBack: ImageButton
     private lateinit var database: DatabaseReference
-    private lateinit var lastIdReference: DatabaseReference
     private lateinit var auth: FirebaseAuth
-    private var userEmail: String? = null
 
     private var supplierId: String? = null // For editing an existing supplier
 
@@ -36,9 +34,7 @@ class InputSupplierActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth and Database reference
         auth = FirebaseAuth.getInstance()
-        userEmail = auth.currentUser?.email
         database = FirebaseDatabase.getInstance().reference.child("suppliers")
-        lastIdReference = FirebaseDatabase.getInstance().reference.child("last_supplier_id")
 
         // Check if we are editing an existing supplier
         supplierId = intent.getStringExtra("supplier_id") // If editing, supplier ID will be passed
@@ -75,29 +71,24 @@ class InputSupplierActivity : AppCompatActivity() {
 
     // Function to add a new supplier
     private fun addSupplier(name: String, phone: String) {
-        val currentEmail = userEmail
-        if (currentEmail == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // Get the reference to the user's suppliers node
+        val userEmail = auth.currentUser?.email ?: return
 
-        // Get the last used ID
-        lastIdReference.get().addOnSuccessListener { snapshot ->
-            var newId = 1
-            if (snapshot.exists()) {
-                // Retrieve the last ID used and increment by 1
-                newId = snapshot.getValue(Int::class.java) ?: 1
-                newId++ // Increment ID
-            }
+        // Convert email to a valid Firebase key
+        val emailKey = userEmail.replace("@", "_").replace(".", "_")
 
-            // Update the last used ID in Firebase
-            lastIdReference.setValue(newId)
+        // Get the reference to the user's suppliers node
+        val userSuppliersRef = database.child(emailKey)
 
-            // Create a new Supplier with the incremented ID
-            val newSupplier = Supplier(newId.toString(), name, phone, currentEmail)
+        // Fetch the current number of suppliers to determine the next ID
+        userSuppliersRef.get().addOnSuccessListener { snapshot ->
+            val nextSupplierId = (snapshot.childrenCount + 1).toString()  // Increment last ID
 
-            // Save the new supplier to Firebase directly under "suppliers"
-            database.child(newId.toString()).setValue(newSupplier).addOnCompleteListener {
+            // Create a new Supplier object
+            val newSupplier = Supplier(nextSupplierId, name, phone)
+
+            // Save the new supplier in Firebase
+            userSuppliersRef.child(nextSupplierId).setValue(newSupplier).addOnCompleteListener {
                 if (it.isSuccessful) {
                     Toast.makeText(this, "Supplier berhasil ditambahkan", Toast.LENGTH_SHORT).show()
                     finish() // Go back to the supplier list
@@ -110,16 +101,17 @@ class InputSupplierActivity : AppCompatActivity() {
 
     // Function to update an existing supplier
     private fun updateSupplier(id: String, name: String, phone: String) {
-        val currentEmail = userEmail
-        if (currentEmail == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // Get the reference to the supplier node under the user's email
+        val userEmail = auth.currentUser?.email ?: return
+        val emailKey = userEmail.replace("@", "_").replace(".", "_")
 
-        val updatedSupplier = Supplier(id, name, phone, currentEmail)
+        val supplierRef = database.child(emailKey).child(id)
 
-        // Update the supplier under "suppliers" with the supplier's ID
-        database.child(id).setValue(updatedSupplier).addOnCompleteListener {
+        // Create the updated supplier object
+        val updatedSupplier = Supplier(id, name, phone)
+
+        // Update the supplier data in Firebase
+        supplierRef.setValue(updatedSupplier).addOnCompleteListener {
             if (it.isSuccessful) {
                 Toast.makeText(this, "Supplier berhasil diperbarui", Toast.LENGTH_SHORT).show()
                 finish() // Go back to the supplier list
@@ -131,7 +123,14 @@ class InputSupplierActivity : AppCompatActivity() {
 
     // Function to load existing supplier data for editing
     private fun loadSupplierData(id: String) {
-        database.child(id).get().addOnSuccessListener {
+        // Get the reference to the supplier node
+        val userEmail = auth.currentUser?.email ?: return
+        val emailKey = userEmail.replace("@", "_").replace(".", "_")
+
+        val supplierRef = database.child(emailKey).child(id)
+
+        // Load the supplier data from Firebase
+        supplierRef.get().addOnSuccessListener {
             if (it.exists()) {
                 val supplier = it.getValue(Supplier::class.java)
                 supplier?.let {
@@ -140,21 +139,5 @@ class InputSupplierActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    // Function to initialize the last supplier ID if it doesn't exist in Firebase
-    private fun initializeLastId() {
-        lastIdReference.get().addOnSuccessListener { snapshot ->
-            if (!snapshot.exists()) {
-                // Initialize the last supplier ID to 1 if it doesn't exist
-                lastIdReference.setValue(1)
-            }
-        }
-    }
-
-    // Call initializeLastId when the activity is created
-    override fun onStart() {
-        super.onStart()
-        initializeLastId() // Ensure the last ID is initialized if not already set
     }
 }

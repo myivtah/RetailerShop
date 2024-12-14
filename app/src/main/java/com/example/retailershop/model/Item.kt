@@ -1,12 +1,11 @@
 package com.example.retailershop.model
 
 data class Item(
-    val codebar: String = "",
-    val name: String = "",
-    val price: Int = 0,
-    val purchasePrice: Int = 0,
-    val quantity: Int = 0,
-    val date: String = "",
-    val supplier: String = "",
-    val userEmail: String = "" // Menambahkan properti userEmail
+    var barcode: String = "",
+    var name: String = "",
+    var price: Int = 0,
+    var purchasePrice: Int = 0,
+    var quantity: Int = 0,
+    var date: String = "",
+    var supplier: String = ""
 )

@@ -31,7 +31,18 @@ class SupplierActivity : AppCompatActivity() {
         adapter = SupplierAdapter(suppliersList)
         recyclerView.adapter = adapter
 
-        database = FirebaseDatabase.getInstance().reference.child("suppliers")
+        // Get the current user's email and use it as the key for the database
+        val userEmail = auth.currentUser?.email
+        if (userEmail == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Convert email to a valid Firebase key
+        val emailKey = userEmail.replace("@", "_").replace(".", "_")
+
+        // Initialize Firebase reference to the user's suppliers
+        database = FirebaseDatabase.getInstance().reference.child("suppliers").child(emailKey)
 
         // Fetch suppliers from Firebase
         setupRealtimeListener()
@@ -45,9 +56,8 @@ class SupplierActivity : AppCompatActivity() {
     }
 
     private fun setupRealtimeListener() {
-        val userEmail = auth.currentUser?.email ?: return
-
-        database.orderByChild("userEmail").equalTo(userEmail).addValueEventListener(object : ValueEventListener {
+        // Listen for changes to the suppliers data in Firebase
+        database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 suppliersList.clear()
                 for (supplierSnapshot in snapshot.children) {
@@ -63,5 +73,26 @@ class SupplierActivity : AppCompatActivity() {
                 Toast.makeText(this@SupplierActivity, "Gagal memuat data supplier", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    // Function to delete supplier by id
+    fun deleteSupplier(supplierId: String) {
+        val userEmail = auth.currentUser?.email
+        if (userEmail == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val emailKey = userEmail.replace("@", "_").replace(".", "_")
+        val supplierRef = database.child(supplierId)
+
+        // Remove supplier from Firebase
+        supplierRef.removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Supplier berhasil dihapus", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Gagal menghapus supplier", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

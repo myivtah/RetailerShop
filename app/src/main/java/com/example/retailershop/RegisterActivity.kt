@@ -39,7 +39,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun validateInput(fullName: String, email: String, phone: String, address: String, password: String, keyCode: String): Boolean {
-        if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty() || password.isEmpty() || keyCode.isEmpty()) {
+        if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -60,16 +60,24 @@ class RegisterActivity : AppCompatActivity() {
     private fun registerUser(fullName: String, email: String, phone: String, address: String, password: String, keyCode: String) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
-                // Gunakan keyCode sebagai ID
-                val userData = mapOf(
+                // Mengganti titik dengan koma di email untuk digunakan sebagai ID di Firebase
+                val emailForId = email.replace(".", ",")
+
+                // Membuat data pengguna
+                val userData = mutableMapOf<String, Any>(
                     "fullName" to fullName,
                     "email" to email,
                     "phone" to phone,
-                    "address" to address,
-                    "keyCode" to keyCode
+                    "address" to address
                 )
 
-                database.reference.child("akun").child(keyCode).setValue(userData).addOnCompleteListener { dbTask ->
+                // Jika keyCode diisi, tambahkan keyCode ke data pengguna
+                if (keyCode.isNotEmpty()) {
+                    userData["keyCode"] = keyCode
+                }
+
+                // Simpan data pengguna di Firebase
+                database.reference.child("akun").child(emailForId).setValue(userData).addOnCompleteListener { dbTask ->
                     if (dbTask.isSuccessful) {
                         Toast.makeText(this, "Registration successful, please login", Toast.LENGTH_SHORT).show()
                         auth.signOut()  // Logout setelah registrasi

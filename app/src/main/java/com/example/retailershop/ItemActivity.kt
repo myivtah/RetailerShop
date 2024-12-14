@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retailershop.adapter.ItemAdapter
 import com.example.retailershop.model.Item
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -57,7 +58,14 @@ class ItemActivity : AppCompatActivity() {
     private fun setupRealtimeListener() {
         val userEmail = auth.currentUser?.email ?: return
 
-        database.orderByChild("userEmail").equalTo(userEmail).addValueEventListener(object : ValueEventListener {
+        // Convert email to a valid Firebase key (replace "@" with "_" and "." with "_")
+        val emailKey = userEmail.replace("@", "_").replace(".", "_")
+
+        // Reference to the user's items node
+        val userItemsRef = Firebase.database.reference.child("items").child(emailKey)
+
+        // Set up real-time listener
+        userItemsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val itemsList = mutableListOf<Item>()
