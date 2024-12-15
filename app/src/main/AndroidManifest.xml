@@ -19,6 +19,9 @@
         android:theme="@style/Theme.RetailerShop"
         tools:targetApi="31">
         <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".InputSupplierActivity"
             android:exported="false" />
         <activity
