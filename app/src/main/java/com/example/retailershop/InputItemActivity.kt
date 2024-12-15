@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.retailershop.model.Item
@@ -68,8 +69,22 @@ class InputItemActivity : AppCompatActivity() {
 
         supplierRef.get().addOnSuccessListener { snapshot ->
             val supplierNames = snapshot.children.mapNotNull { it.getValue(Supplier::class.java)?.name }
+            val supplierMap = snapshot.children.associate { it.getValue(Supplier::class.java)?.name to it.getValue(Supplier::class.java) }
+            selectedSupplier = supplierMap[supplierNames.firstOrNull()]
+
             val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, supplierNames)
-            findViewById<Spinner>(R.id.spinner_suplier_input).adapter = adapter
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            val spinner = findViewById<Spinner>(R.id.spinner_suplier_input)
+            spinner.adapter = adapter
+
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    selectedSupplier = supplierMap[supplierNames[position]]
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    selectedSupplier = null
+                }
+            }
         }
     }
 
@@ -88,7 +103,7 @@ class InputItemActivity : AppCompatActivity() {
 
         val emailKey = userEmail!!.replace("@", "_").replace(".", "_")
         val userItemsRef = database.child(emailKey).child(barcode)
-        val item = Item(barcode, name, price, purchasePrice, quantity, date, selectedSupplier?.name ?: "Unknown")
+        val item = Item(barcode, name, price, purchasePrice, quantity, date, selectedSupplier?.name ?: "")
 
         userItemsRef.setValue(item).addOnCompleteListener {
             Toast.makeText(this, "Item berhasil disimpan", Toast.LENGTH_SHORT).show()

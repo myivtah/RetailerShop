@@ -32,7 +32,7 @@
 
             <!-- Decrement Button -->
             <ImageButton
-                android:id="@+id/btn_decrement"
+                android:id="@+id/btnDecrease"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_minus"
@@ -50,7 +50,7 @@
 
             <!-- Increment Button -->
             <ImageButton
-                android:id="@+id/btn_increment"
+                android:id="@+id/btnIncrease"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_plus"
@@ -73,7 +73,7 @@
 
         <!-- Delete Button -->
         <ImageButton
-            android:id="@+id/deleteItem"
+            android:id="@+id/btnDelete"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_delete"
