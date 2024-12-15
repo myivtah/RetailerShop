@@ -35,25 +35,25 @@ class InputMemberActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize Firebase Realtime Database and Auth
+        // Inisialisasi Firebase Realtime Database dan Auth
         database = FirebaseDatabase.getInstance().reference.child("members")
         auth = FirebaseAuth.getInstance()
-        userEmail = auth.currentUser?.email
+        userEmail = auth.currentUser?.email?.replace(".", ",")
 
-        // Initialize views
+        // Inisialisasi view
         memberName = findViewById(R.id.memberName)
         memberEmail = findViewById(R.id.memberEmail)
         memberPhone = findViewById(R.id.memberPhone)
         memberAddress = findViewById(R.id.memberAddress)
         btnAddMember = findViewById(R.id.addMember)
 
-        // Check if editing an existing member
+        // Periksa apakah mengedit member yang sudah ada
         memberId = intent.getStringExtra("memberId")
         if (memberId != null) {
             loadMemberData(memberId!!)
         }
 
-        // Set click listener for Add Member button
+        // Set click listener untuk tombol Tambah Member
         btnAddMember.setOnClickListener {
             if (memberId == null) {
                 addMemberToDatabase()
@@ -64,7 +64,7 @@ class InputMemberActivity : AppCompatActivity() {
     }
 
     private fun loadMemberData(memberId: String) {
-        database.child(memberId).get().addOnSuccessListener { snapshot ->
+        database.child("$userEmail/$memberId").get().addOnSuccessListener { snapshot ->
             val member = snapshot.getValue(Member::class.java)
             member?.let {
                 memberName.setText(it.name)
@@ -73,7 +73,7 @@ class InputMemberActivity : AppCompatActivity() {
                 memberAddress.setText(it.address)
             }
         }.addOnFailureListener {
-            Toast.makeText(this, "Failed to load member data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Gagal memuat data member", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -84,17 +84,17 @@ class InputMemberActivity : AppCompatActivity() {
         val address = memberAddress.text.toString().trim()
 
         if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Silakan isi semua bidang", Toast.LENGTH_SHORT).show()
             return
         }
 
         val currentEmail = userEmail
         if (currentEmail == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Pengguna tidak terautentikasi", Toast.LENGTH_SHORT).show()
             return
         }
 
-        database.get().addOnSuccessListener { snapshot ->
+        database.child(currentEmail).get().addOnSuccessListener { snapshot ->
             val newMemberId = (snapshot.childrenCount + 1).toString()
 
             val memberData = HashMap<String, Any>().apply {
@@ -103,25 +103,24 @@ class InputMemberActivity : AppCompatActivity() {
                 put("email", email)
                 put("phone", phone)
                 put("address", address)
-                put("userEmail", currentEmail) // Menyimpan email pengguna yang sedang login
             }
 
-            database.child(newMemberId).setValue(memberData)
+            database.child("$currentEmail/$newMemberId").setValue(memberData)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(this, "Member added successfully", Toast.LENGTH_SHORT).show()
-                        // Clear the input fields
+                        Toast.makeText(this, "Member berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                        // Hapus input fields
                         memberName.text.clear()
                         memberEmail.text.clear()
                         memberPhone.text.clear()
                         memberAddress.text.clear()
-                        finish() // Go back to MemberActivity
+                        finish() // Kembali ke MemberActivity
                     } else {
-                        Toast.makeText(this, "Failed to add member", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Gagal menambahkan member", Toast.LENGTH_SHORT).show()
                     }
                 }
         }.addOnFailureListener {
-            Toast.makeText(this, "Failed to fetch data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -132,13 +131,13 @@ class InputMemberActivity : AppCompatActivity() {
         val address = memberAddress.text.toString().trim()
 
         if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Silakan isi semua bidang", Toast.LENGTH_SHORT).show()
             return
         }
 
         val currentEmail = userEmail
         if (currentEmail == null) {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Pengguna tidak terautentikasi", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -147,19 +146,18 @@ class InputMemberActivity : AppCompatActivity() {
             put("email", email)
             put("phone", phone)
             put("address", address)
-            put("userEmail", currentEmail) // Menyimpan email pengguna yang sedang login
         }
 
-        database.child(memberId).updateChildren(memberData)
+        database.child("$currentEmail/$memberId").updateChildren(memberData)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(this, "Member updated successfully", Toast.LENGTH_SHORT).show()
-                    finish() // Go back to MemberActivity
+                    Toast.makeText(this, "Member berhasil diperbarui", Toast.LENGTH_SHORT).show()
+                    finish() // Kembali ke MemberActivity
                 } else {
-                    Toast.makeText(this, "Failed to update member", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal memperbarui member", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener {
-                Toast.makeText(this, "Failed to update member", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Gagal memperbarui member", Toast.LENGTH_SHORT).show()
             }
     }
 }

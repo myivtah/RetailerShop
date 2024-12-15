@@ -98,8 +98,8 @@ class ProductAdapter(
         val nameTextView: TextView = itemView.findViewById(R.id.productName)
         val priceTextView: TextView = itemView.findViewById(R.id.productPrice)
         val quantityEditText: EditText = itemView.findViewById(R.id.ev_quantity)
-        val increaseQuantityButton: ImageButton = itemView.findViewById(R.id.btn_increment)
-        val decreaseQuantityButton: ImageButton = itemView.findViewById(R.id.btn_decrement)
-        val deleteButton: ImageButton = itemView.findViewById(R.id.deleteItem)
+        val increaseQuantityButton: ImageButton = itemView.findViewById(R.id.btnIncrease)
+        val decreaseQuantityButton: ImageButton = itemView.findViewById(R.id.btnDecrease)
+        val deleteButton: ImageButton = itemView.findViewById(R.id.btnDelete)
     }
 }

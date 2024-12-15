@@ -90,7 +90,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
     }
 
     private fun findProductByBarcode(barcode: String) {
-        val productRef = database.child("items").child(barcode).child(userEmail?.replace(".", "_") ?: "")
+        val productRef = database.child("items").child(userEmail?.replace(".", "_")?.replace("@","_") ?: "").child(barcode)
         productRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -203,10 +203,10 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
                     put("cashPaid", NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(cashPaidEdit.text.toString().toIntOrNull() ?: 0))
                     put("cashChange", NumberFormat.getCurrencyInstance(Locale("id", "ID")).format(calculateCashChange()))
                     put("transactionDate", currentTime)
-                    put("userEmail", currentEmail) // Menyimpan email pengguna yang sedang login
+                    put("userEmail", currentEmail)
                 }
 
-                database.child("transactions").child(transactionId).setValue(transactionData)
+                database.child("transactions").child(currentEmail.replace("@","_").replace(".","_")).child(transactionId).setValue(transactionData)
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
                             reduceStockAndProceed(transactionId)
@@ -223,29 +223,45 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
     }
 
     private fun reduceStockAndProceed(transactionId: String) {
+        var updatedCount = 0
+        val totalProducts = productList.size
+
         for (product in productList) {
-            val productRef = database.child("items").child(product.barcode).child(userEmail?.replace(".", "_") ?: "")
+            // Ambil referensi ke produk berdasarkan barcode dan user email
+            val productRef = database.child("items")
+                .child(userEmail?.replace(".", "_")?.replace("@", "_") ?: "")
+                .child(product.barcode)
+
             productRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val currentStock = snapshot.child("quantity").getValue(Int::class.java) ?: 0
                     val updatedStock = currentStock - product.quantity
 
-                    productRef.child("quantity").setValue(updatedStock)
-                        .addOnCompleteListener {
-                            if (it.isSuccessful) {
-                                if (productList.indexOf(product) == productList.size - 1) {
-                                    val intent = Intent(this@TransactionActivity, SubmittedActivity::class.java)
-                                    intent.putExtra("transactionId", transactionId)
-                                    startActivity(intent)
+                    if (updatedStock < 0) {
+                        // Jika stok tidak mencukupi, tampilkan pesan error
+                        Toast.makeText(this@TransactionActivity, "Stok tidak cukup untuk produk ${product.name}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Update stok yang ada di database
+                        productRef.child("quantity").setValue(updatedStock)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    updatedCount++
+
+                                    // Jika semua stok terupdate dengan sukses, lanjutkan ke layar berikutnya
+                                    if (updatedCount == totalProducts) {
+                                        val intent = Intent(this@TransactionActivity, SubmittedActivity::class.java)
+                                        intent.putExtra("transactionId", transactionId)
+                                        startActivity(intent)
+                                    }
+                                } else {
+                                    Toast.makeText(this@TransactionActivity, "Gagal memperbarui stok untuk produk ${product.name}", Toast.LENGTH_SHORT).show()
                                 }
-                            } else {
-                                Toast.makeText(this@TransactionActivity, "Failed to update stock for product ${product.name}", Toast.LENGTH_SHORT).show()
                             }
-                        }
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@TransactionActivity, "Failed to fetch product stock", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@TransactionActivity, "Gagal memuat data stok produk", Toast.LENGTH_SHORT).show()
                 }
             })
         }

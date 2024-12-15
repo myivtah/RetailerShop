@@ -23,7 +23,7 @@ class MemberActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_member)
 
-        // Initialize Firebase Auth, RecyclerView, and Database reference
+        // Inisialisasi Firebase Auth, RecyclerView, dan referensi Database
         auth = FirebaseAuth.getInstance()
         recyclerView = findViewById(R.id.rv_members)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -31,12 +31,13 @@ class MemberActivity : AppCompatActivity() {
         adapter = MemberAdapter(memberList, this::onEditMember, this::onDeleteMember)
         recyclerView.adapter = adapter
 
-        database = FirebaseDatabase.getInstance().reference.child("members")
+        val userEmail = auth.currentUser?.email?.replace(".", ",") ?: return
+        database = FirebaseDatabase.getInstance().reference.child("members").child(userEmail)
 
-        // Fetch members from Firebase
+        // Ambil data members dari Firebase
         fetchMembers()
 
-        // Set up the add member button
+        // Atur tombol tambah member
         val btnAddMember = findViewById<androidx.appcompat.widget.AppCompatButton>(R.id.btn_add_member)
         btnAddMember.setOnClickListener {
             val intent = Intent(this, InputMemberActivity::class.java)
@@ -45,9 +46,7 @@ class MemberActivity : AppCompatActivity() {
     }
 
     private fun fetchMembers() {
-        val userEmail = auth.currentUser?.email ?: return
-
-        database.orderByChild("userEmail").equalTo(userEmail).addValueEventListener(object : ValueEventListener {
+        database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 memberList.clear()
                 for (memberSnapshot in snapshot.children) {
@@ -60,25 +59,28 @@ class MemberActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@MemberActivity, "Failed to load member data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MemberActivity, "Gagal memuat data member", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun onEditMember(member: Member) {
-        // Navigate to InputMemberActivity for editing
+        // Pindah ke InputMemberActivity untuk mengedit
         val intent = Intent(this, InputMemberActivity::class.java)
         intent.putExtra("memberId", member.id)
         startActivity(intent)
     }
 
     private fun onDeleteMember(member: Member) {
-        // Handle delete member logic
+        val userEmail = auth.currentUser?.email?.replace(".", ",") ?: return
+
+        // Logika hapus member
         database.child(member.id).removeValue().addOnCompleteListener {
             if (it.isSuccessful) {
-                Toast.makeText(this, "Member deleted successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Member berhasil dihapus", Toast.LENGTH_SHORT).show()
+                fetchMembers()  // Segarkan daftar member
             } else {
-                Toast.makeText(this, "Failed to delete member", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Gagal menghapus member", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -33,10 +33,13 @@ class SubmittedActivity : AppCompatActivity() {
         setContentView(R.layout.activity_submitted)
 
         auth = FirebaseAuth.getInstance()
+        val userEmail = auth.currentUser?.email
+
+        val currentUser = userEmail?.replace("@", "_")?.replace(".", "_").toString()
 
         // Initialize views
         transactionId = intent.getStringExtra("transactionId") ?: return
-        database = FirebaseDatabase.getInstance().reference.child("transactions").child(transactionId)
+        database = FirebaseDatabase.getInstance().reference.child("transactions").child(currentUser).child(transactionId)
 
         productList = mutableListOf()
         recyclerView = findViewById(R.id.recyclerViewSubmitted)
