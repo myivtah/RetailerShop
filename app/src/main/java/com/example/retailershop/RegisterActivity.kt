@@ -28,18 +28,27 @@ class RegisterActivity : AppCompatActivity() {
             val fullName = binding.fullNameRegister.text.toString().trim()
             val email = binding.emailRegister.text.toString().trim()
             val phone = binding.phoneRegister.text.toString().trim()
+            val storeName = binding.storeName.text.toString().trim()
             val address = binding.addressRegister.text.toString().trim()
             val password = binding.passwordRegister.text.toString()
             val keyCode = binding.keyCodeRegister.text.toString().trim()
 
-            if (validateInput(fullName, email, phone, address, password, keyCode)) {
-                registerUser(fullName, email, phone, address, password, keyCode)
+            if (validateInput(fullName, email, phone, storeName, address, password, keyCode)) {
+                registerUser(fullName, email, phone, storeName, address, password, keyCode)
             }
         }
     }
 
-    private fun validateInput(fullName: String, email: String, phone: String, address: String, password: String, keyCode: String): Boolean {
-        if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || address.isEmpty() || password.isEmpty()) {
+    private fun validateInput(
+        fullName: String,
+        email: String,
+        phone: String,
+        storeName: String,
+        address: String,
+        password: String,
+        keyCode: String
+    ): Boolean {
+        if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || storeName.isEmpty() || address.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -57,7 +66,46 @@ class RegisterActivity : AppCompatActivity() {
         return true
     }
 
-    private fun registerUser(fullName: String, email: String, phone: String, address: String, password: String, keyCode: String) {
+    private fun registerUser(
+        fullName: String,
+        email: String,
+        phone: String,
+        storeName: String,
+        address: String,
+        password: String,
+        keyCode: String
+    ) {
+        // Jika keyCode kosong, lanjutkan registrasi tanpa validasi keyCode
+        if (keyCode.isEmpty()) {
+            proceedWithRegistration(fullName, email, phone, storeName, address, password, keyCode)
+            return
+        }
+
+        // Validasi keyCode dengan database jika diisi
+        database.reference.child("Keycode").get().addOnSuccessListener { dataSnapshot ->
+            val keyCodes = dataSnapshot.children.mapNotNull { it.getValue(String::class.java) }
+
+            if (keyCodes.contains(keyCode)) {
+                // KeyCode valid, lanjutkan registrasi
+                proceedWithRegistration(fullName, email, phone, storeName, address, password, keyCode)
+            } else {
+                // KeyCode tidak valid
+                Toast.makeText(this, "Invalid keycode", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Failed to validate keycode", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun proceedWithRegistration(
+        fullName: String,
+        email: String,
+        phone: String,
+        storeName: String,
+        address: String,
+        password: String,
+        keyCode: String
+    ) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 // Mengganti titik dengan koma di email untuk digunakan sebagai ID di Firebase
@@ -68,27 +116,27 @@ class RegisterActivity : AppCompatActivity() {
                     "fullName" to fullName,
                     "email" to email,
                     "phone" to phone,
+                    "storeName" to storeName,
                     "address" to address
                 )
 
-                // Jika keyCode diisi, tambahkan keyCode ke data pengguna
+                // Tambahkan keyCode jika diisi
                 if (keyCode.isNotEmpty()) {
                     userData["keyCode"] = keyCode
                 }
 
-                // Simpan data pengguna di Firebase
-                database.reference.child("akun").child(emailForId).setValue(userData).addOnCompleteListener { dbTask ->
-                    if (dbTask.isSuccessful) {
-                        Toast.makeText(this, "Registration successful, please login", Toast.LENGTH_SHORT).show()
-                        auth.signOut()  // Logout setelah registrasi
-                        // Mengarahkan pengguna ke LoginActivity
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show()
+                database.reference.child("akun").child(emailForId).setValue(userData)
+                    .addOnCompleteListener { dbTask ->
+                        if (dbTask.isSuccessful) {
+                            Toast.makeText(this, "Registration successful, please login", Toast.LENGTH_SHORT).show()
+                            auth.signOut() // Logout setelah registrasi
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
             } else {
                 val errorMessage = task.exception?.localizedMessage ?: "Registration failed"
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()

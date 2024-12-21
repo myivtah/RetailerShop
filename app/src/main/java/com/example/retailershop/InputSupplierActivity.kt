@@ -30,7 +30,6 @@ class InputSupplierActivity : AppCompatActivity() {
         etSupplierName = findViewById(R.id.et_supplier_name)
         etSupplierPhone = findViewById(R.id.et_supplier_phone)
         btnSaveSupplier = findViewById(R.id.btn_save_supplier)
-        imageBack = findViewById(R.id.imageBack_input_supplier)
 
         // Initialize Firebase Auth and Database reference
         auth = FirebaseAuth.getInstance()

@@ -6,100 +6,106 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".InputMemberActivity">
+    tools:context=".InputMemberActivity"
+    android:background="@drawable/background_gradient">
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/imageBack_member"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_back"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black" />
-
+    <!-- Form Layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:layout_marginTop="40dp"
+        android:padding="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageBack_member">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/card_background"
+        android:elevation="8dp"
+        android:layout_marginBottom="20dp">
 
         <!-- EditText for member name -->
         <EditText
             android:id="@+id/memberName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/edit_text_background"
             android:hint="Member Name"
-            android:padding="8dp"
+            android:padding="12dp"
+            android:textColor="#333"
+            android:textColorHint="#777"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintWidth_percent="0.9"/>
 
         <!-- EditText for member email -->
         <EditText
             android:id="@+id/memberEmail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:background="@drawable/edit_text_background"
             android:hint="Member Email"
             android:inputType="textEmailAddress"
-            android:padding="8dp"
-            android:layout_marginTop="10dp"
+            android:padding="12dp"
+            android:textColor="#333"
+            android:textColorHint="#777"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/memberName"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintWidth_percent="0.9"/>
 
         <!-- EditText for member phone -->
         <EditText
             android:id="@+id/memberPhone"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:background="@drawable/edit_text_background"
             android:hint="Member Phone"
             android:inputType="phone"
-            android:padding="8dp"
-            android:layout_marginTop="10dp"
+            android:padding="12dp"
+            android:textColor="#333"
+            android:textColorHint="#777"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/memberEmail"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintWidth_percent="0.9"/>
 
         <!-- EditText for member address -->
         <EditText
             android:id="@+id/memberAddress"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:background="@drawable/edit_text_background"
             android:hint="Member Address"
-            android:padding="8dp"
-            android:layout_marginTop="10dp"
+            android:padding="12dp"
+            android:textColor="#333"
+            android:textColorHint="#777"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/memberPhone"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintWidth_percent="0.9"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Button to add a new member -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addMember"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:backgroundTint="@android:color/holo_blue_dark"
         android:text="Add Member"
         android:textColor="@android:color/white"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout"
+        app:layout_constraintWidth_percent="0.9"
+        android:elevation="4dp"
+        android:layout_marginBottom="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

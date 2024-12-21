@@ -5,20 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".InputSupplierActivity">
-
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/imageBack_input_supplier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_back"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black" />
+    tools:context=".InputSupplierActivity"
+    android:background="@drawable/background_gradient">
 
     <!-- Supplier Name Input -->
     <EditText
@@ -26,12 +14,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Nama Supplier"
-        android:textSize="16sp"
         android:inputType="text"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edit_text_bordered"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageBack_input_supplier" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#333"
+        android:textColorHint="#777" />
 
     <!-- Supplier Phone Input -->
     <EditText
@@ -41,10 +33,14 @@
         android:hint="Nomor Telepon"
         android:textSize="16sp"
         android:inputType="phone"
+        android:padding="12dp"
         android:layout_marginTop="16dp"
+        android:background="@drawable/edit_text_bordered"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_supplier_name" />
+        app:layout_constraintTop_toBottomOf="@id/et_supplier_name"
+        android:textColor="#333"
+        android:textColorHint="#777" />
 
     <!-- Save Button -->
     <Button
@@ -53,8 +49,9 @@
         android:layout_height="wrap_content"
         android:text="Simpan"
         android:textColor="@android:color/white"
-        android:background="@color/white"
+        android:textSize="16sp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/button_bordered"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_supplier_phone" />

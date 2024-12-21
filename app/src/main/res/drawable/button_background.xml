@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Button Pressed State -->
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#66bb6a"/> <!-- Light green on press -->
+            <corners android:radius="8dp"/>
+            <stroke android:color="#388e3c" android:width="2dp"/>
+        </shape>
+    </item>
+    <!-- Default Button State -->
+    <item>
+        <shape>
+            <solid android:color="#81c784"/> <!-- Default green color -->
+            <corners android:radius="8dp"/>
+            <stroke android:color="#4caf50" android:width="2dp"/>
+        </shape>
+    </item>
+</selector>
+
+

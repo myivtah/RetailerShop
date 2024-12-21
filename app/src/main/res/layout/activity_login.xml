@@ -11,63 +11,84 @@
         android:id="@+id/cardViewLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="@android:color/transparent"
+        android:layout_margin="24dp"
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cardElevation="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/card_background_gradient"
-            android:padding="16dp">
+            android:padding="24dp">
 
+            <!-- Logo -->
             <ImageView
                 android:id="@+id/logoLogin"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_launcher_foreground"
                 android:layout_marginTop="32dp" />
 
+            <!-- Email EditText -->
             <EditText
                 android:id="@+id/emailLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:hint="Email"
-                android:inputType="textEmailAddress" />
+                android:textColorHint="#B0BEC5"
+                android:inputType="textEmailAddress"
+                android:background="@drawable/rounded_edittext"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
 
+            <!-- Password EditText -->
             <EditText
                 android:id="@+id/passwordLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:hint="Password"
-                android:inputType="textPassword" />
+                android:textColorHint="#B0BEC5"
+                android:inputType="textPassword"
+                android:background="@drawable/rounded_edittext"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
 
+            <!-- Login Button -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:text="Login"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
                 android:background="@drawable/button_gradient_orange"
-                android:backgroundTint="@null"
-                android:textColor="@android:color/white" />
+                android:padding="16dp"
+                android:layout_gravity="center"/>
 
+            <!-- Sign Up Link -->
             <TextView
                 android:id="@+id/signup_linkLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_gravity="center"
                 android:text="Don't have an account? Sign up"
-                android:textColor="@android:color/holo_blue_light" />
+                android:textColor="#FF5722"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"/>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

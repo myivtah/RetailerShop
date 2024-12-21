@@ -14,10 +14,10 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_back"
-        android:layout_marginStart="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardViewRegister"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- CardView untuk Formulir Register -->
     <androidx.cardview.widget.CardView
@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="32dp"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="12dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,7 +41,7 @@
             android:orientation="vertical"
             android:background="@drawable/card_background_gradient"
             android:paddingHorizontal="24dp"
-            android:paddingVertical="16dp">
+            android:paddingVertical="32dp">
 
             <!-- Logo -->
             <ImageView
@@ -59,7 +60,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Full Name"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <!-- Email -->
             <EditText
@@ -68,7 +72,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <!-- Phone -->
             <EditText
@@ -77,7 +84,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Phone Number"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+            <!-- Phone -->
+            <EditText
+                android:id="@+id/storeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Store Name"
+                android:inputType="text"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <!-- Address -->
             <EditText
@@ -86,7 +108,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Full Address"
-                android:inputType="textPostalAddress" />
+                android:inputType="textPostalAddress"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <!-- Password -->
             <EditText
@@ -95,7 +120,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <!-- Key Code -->
             <EditText
@@ -104,7 +132,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Key Code"
-                android:inputType="text" />
+                android:inputType="text"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
             <!-- Button Register -->
             <androidx.appcompat.widget.AppCompatButton
@@ -113,8 +144,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Register"
+                android:textColor="@android:color/white"
                 android:background="@drawable/button_gradient_orange"
-                android:textColor="@android:color/white" />
+                android:textAllCaps="false"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

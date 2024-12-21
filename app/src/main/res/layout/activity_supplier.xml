@@ -10,31 +10,21 @@
     android:background="@drawable/background_gradient"
     tools:context=".SupplierActivity">
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/imageBack_supplier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_back"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <!-- RecyclerView for displaying supplier list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_suppliers"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@drawable/recyclerview_background"
+        android:elevation="12dp"
         android:clipToPadding="false"
-        android:layout_marginTop="12dp"
-        android:background="@color/white"
-        android:padding="12sp"
-        app:layout_constraintTop_toBottomOf="@id/imageBack_supplier"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@id/buttons_layout_supplier"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/buttons_layout_supplier" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
 
     <!-- Layout for buttons at the bottom -->
     <LinearLayout
@@ -43,6 +33,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
+        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -52,8 +43,16 @@
             android:id="@+id/btn_add_supplier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Tambah Supplier"
-            android:layout_marginEnd="16dp" />
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_gradient"
+            android:layout_marginEnd="16dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

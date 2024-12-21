@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    android:layout_margin="8dp"
-    android:padding="16dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="8dp"
+    android:layout_margin="12dp"
+    android:padding="16dp"
+    android:backgroundTint="#FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,25 +21,27 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Supplier Name"
-            android:textSize="25sp"
+            android:textSize="22sp"
+            android:textColor="#212121"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@id/linearSupplier"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="12dp"/>
 
         <!-- Supplier Phone -->
         <TextView
             android:id="@+id/tv_supplier_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:text="Supplier Phone"
-            android:textSize="20sp"
+            android:textSize="18sp"
+            android:textColor="#757575"
             app:layout_constraintEnd_toStartOf="@+id/linearSupplier"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_supplier_name" />
+            app:layout_constraintTop_toBottomOf="@id/tv_supplier_name"
+            android:layout_marginTop="8dp"/>
 
         <!-- Edit and Delete Buttons -->
         <LinearLayout
@@ -59,7 +62,8 @@
                 android:src="@drawable/ic_edit"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Edit Supplier"
-                android:layout_marginEnd="12dp" />
+                android:layout_marginEnd="12dp"
+                app:tint="#FF9800" />
 
             <!-- Delete Button -->
             <ImageButton
@@ -70,7 +74,8 @@
                 android:layout_margin="10dp"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Delete Supplier"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="12dp"
+                app:tint="#D32F2F" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

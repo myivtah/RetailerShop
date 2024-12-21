@@ -3,4 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#1F509A</color>
+    <color name="primary">#6200EE</color>
+    <color name="primaryDark">#3700B3</color>
+    <color name="primaryText">#FFFFFF</color>
+    <color name="secondaryText">#BDBDBD</color>
+    <color name="background">#FFFFFF</color>
+    <color name="secondary">#03DAC5</color>
+
 </resources>

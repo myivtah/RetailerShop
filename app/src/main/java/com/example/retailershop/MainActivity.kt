@@ -1,5 +1,6 @@
 package com.example.retailershop
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -11,6 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,6 +44,11 @@ class MainActivity : AppCompatActivity() {
         // CardView Membership
         findViewById<CardView>(R.id.cardMember).setOnClickListener {
             startActivity(Intent(this, MemberActivity::class.java))
+        }
+
+        // CardView History
+        findViewById<CardView>(R.id.cardHistory).setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
 
         // Button Logout

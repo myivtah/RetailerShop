@@ -54,7 +54,7 @@ class InputItemActivity : AppCompatActivity() {
 
                     findViewById<EditText>(R.id.et_nama_item_input).setText(it.name)
                     findViewById<EditText>(R.id.et_harga_satuan_input).setText(it.price.toString())
-                    findViewById<EditText>(R.id.et_harga_satuan_beli_input).setText(it.purchasePrice.toString())
+                    findViewById<EditText>(R.id.et_harga_beli_input).setText(it.purchasePrice.toString())
                     findViewById<EditText>(R.id.et_quantity_input).setText(it.quantity.toString())
                     findViewById<EditText>(R.id.et_tanggal_input).setText(it.date)
                 }
@@ -92,7 +92,7 @@ class InputItemActivity : AppCompatActivity() {
         val barcode = findViewById<EditText>(R.id.et_id_item_input).text.toString().trim()
         val name = findViewById<EditText>(R.id.et_nama_item_input).text.toString().trim()
         val price = findViewById<EditText>(R.id.et_harga_satuan_input).text.toString().toIntOrNull() ?: 0
-        val purchasePrice = findViewById<EditText>(R.id.et_harga_satuan_beli_input).text.toString().toIntOrNull() ?: 0
+        val purchasePrice = findViewById<EditText>(R.id.et_harga_beli_input).text.toString().toIntOrNull() ?: 0
         val quantity = findViewById<EditText>(R.id.et_quantity_input).text.toString().toIntOrNull() ?: 0
         val date = findViewById<EditText>(R.id.et_tanggal_input).text.toString().trim()
 

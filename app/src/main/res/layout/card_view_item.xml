@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="16dp"
-    app:cardElevation="8dp"
+    app:cardElevation="12dp"
     android:layout_margin="16dp"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:backgroundTint="#ffffff">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,12 +23,13 @@
             android:hint="ID Item"
             android:text=""
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
+            android:textColor="#333"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"/>
 
         <!-- Nama Item -->
         <TextView
@@ -37,12 +39,13 @@
             android:hint="Nama Item"
             android:text=""
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_id_item"
-            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
+            android:textColor="#000"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_id_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"/>
 
         <!-- Harga Satuan -->
         <TextView
@@ -52,12 +55,13 @@
             android:hint="Harga Satuan"
             android:text=""
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_nama_item"
-            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
+            android:textColor="#FF5722"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_nama_item"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"/>
 
         <!-- Quantity -->
         <TextView
@@ -67,12 +71,13 @@
             android:hint="Quantity"
             android:textSize="14sp"
             android:text=""
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_harga_satuan"
-            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
+            android:textColor="#4CAF50"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_harga_satuan"
+            app:layout_constraintEnd_toStartOf="@id/linearEditDelete"/>
 
         <!-- Tanggal Diinputkan -->
         <TextView
@@ -86,32 +91,33 @@
             android:hint="Tanggal Diinputkan"
             android:textSize="12sp"
             android:text=""
+            android:textColor="#757575"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/linearEditDelete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_quantity" />
 
+        <!-- LinearLayout for Edit and Delete Buttons -->
         <LinearLayout
             android:id="@+id/linearEditDelete"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
             <!-- Edit Button -->
             <ImageButton
                 android:id="@+id/btn_edit_item"
-                android:layout_width="wrap_content"
+                android:layout_width="52dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
                 android:layout_marginTop="15dp"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Edit Item"
                 android:src="@drawable/ic_edit"
-                app:layout_constraintBottom_toBottomOf="@id/btn_delete_item"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:tint="#FF9800" /> <!-- Orange color for edit -->
 
             <!-- Delete Button -->
             <ImageButton
@@ -121,11 +127,9 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
                 android:background="?attr/selectableItemBackground"
-                android:contentDescription="Edit Item"
+                android:contentDescription="Delete Item"
                 android:src="@drawable/ic_delete"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btn_edit_item" />
+                app:tint="#F44336" /> <!-- Red color for delete -->
 
         </LinearLayout>
 

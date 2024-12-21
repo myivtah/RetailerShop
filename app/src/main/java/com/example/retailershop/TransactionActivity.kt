@@ -1,5 +1,6 @@
 package com.example.retailershop
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -136,7 +137,9 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
             return
         }
 
-        val transactionsRef = database.child("transactions").orderByChild("userEmail").equalTo(currentEmail)
+        val userEmail = currentEmail?.replace("@", "_")?.replace(".", "_").toString()
+
+        val transactionsRef = database.child("transactions").child(userEmail)
         transactionsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val transactionCount = snapshot.childrenCount
@@ -166,7 +169,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
     }
 
     private fun checkForKeyCodeAndProceed(currentEmail: String) {
-        val userRef = database.child("akun").child(currentEmail.replace(".", "_"))
+        val userRef = database.child("akun").child(currentEmail.replace(".", ","))
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val keyCode = snapshot.child("keyCode").getValue(String::class.java)
@@ -184,6 +187,7 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         })
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun saveTransactionToDatabase() {
         val currentEmail = userEmail
         if (currentEmail == null) {
@@ -191,7 +195,8 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
             return
         }
 
-        database.child("transactions").addListenerForSingleValueEvent(object : ValueEventListener {
+        val transactionRef = database.child("transactions").child(currentEmail.replace("@","_").replace(".","_"))
+            transactionRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val transactionId = (snapshot.childrenCount + 1).toString()
                 val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
