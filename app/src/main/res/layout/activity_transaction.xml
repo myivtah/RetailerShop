@@ -138,7 +138,7 @@
     app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Cash Change (Optional) -->
-    <EditText
+    <TextView
     android:id="@+id/totalKembalian"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
     android:hint="Cash Change"
     android:padding="12dp"
     android:textSize="18sp"
-    android:background="@color/white"
+        android:background="@android:color/holo_blue_dark"
     app:layout_constraintTop_toBottomOf="@id/Cash"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />

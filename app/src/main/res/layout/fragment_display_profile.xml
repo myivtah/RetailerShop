@@ -1,0 +1,174 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Profile Header -->
+        <LinearLayout
+            android:id="@+id/profile_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/retailershop"
+                android:contentDescription="Profile Image"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/circle"/>
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primaryText"/>
+        </LinearLayout>
+
+        <!-- Profile Information -->
+        <LinearLayout
+            android:id="@+id/profile_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/white"
+            android:elevation="2dp"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/label_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"/>
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="johndoe@example.com"
+                android:textColor="@color/secondaryText"/>
+
+            <TextView
+                android:id="@+id/label_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="16dp"/>
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="123 Main Street"
+                android:textColor="@color/secondaryText"/>
+
+            <TextView
+                android:id="@+id/label_full_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Name"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="16dp"/>
+            <TextView
+                android:id="@+id/full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:textColor="@color/secondaryText"/>
+
+            <TextView
+                android:id="@+id/label_key_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Key Code"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="16dp"/>
+            <TextView
+                android:id="@+id/key_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ABC123"
+                android:textColor="@color/secondaryText"/>
+
+            <TextView
+                android:id="@+id/label_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="16dp"/>
+            <TextView
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="+123456789"
+                android:textColor="@color/secondaryText"/>
+
+            <TextView
+                android:id="@+id/label_store_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Store Name"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="16dp"/>
+            <TextView
+                android:id="@+id/store_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Store"
+                android:textColor="@color/secondaryText"/>
+        </LinearLayout>
+
+        <!-- Edit and Logout Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btn_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:backgroundTint="@drawable/button_background_primary"
+                android:textColor="@color/primaryText"
+                android:padding="12dp"
+                android:layout_marginRight="8dp"/>
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:backgroundTint="@drawable/button_background_secondary"
+                android:textColor="@color/primaryText"
+                android:padding="12dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

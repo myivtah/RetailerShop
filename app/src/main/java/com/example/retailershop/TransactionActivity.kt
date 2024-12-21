@@ -61,8 +61,8 @@ class TransactionActivity : AppCompatActivity(), ProductAdapter.OnProductActionL
         database = FirebaseDatabase.getInstance().reference
 
         val inputBarcode = findViewById<EditText>(R.id.inputBarcode)
-        val btnScanBarcode = findViewById<ImageButton>(R.id.btnScanBarcode)
-        val btnAddItem = findViewById<ImageButton>(R.id.tambahItemTransaksi)
+        val btnScanBarcode = findViewById<Button>(R.id.btnScanBarcode)
+        val btnAddItem = findViewById<Button>(R.id.tambahItemTransaksi)
 
         btnScanBarcode.setOnClickListener {
             launchBarcodeScanner()

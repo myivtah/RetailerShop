@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -16,7 +15,6 @@ class InputSupplierActivity : AppCompatActivity() {
     private lateinit var etSupplierName: EditText
     private lateinit var etSupplierPhone: EditText
     private lateinit var btnSaveSupplier: Button
-    private lateinit var imageBack: ImageButton
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
@@ -60,11 +58,6 @@ class InputSupplierActivity : AppCompatActivity() {
                 // Add new supplier
                 addSupplier(name, phone)
             }
-        }
-
-        // Back button
-        imageBack.setOnClickListener {
-            onBackPressed()
         }
     }
 
