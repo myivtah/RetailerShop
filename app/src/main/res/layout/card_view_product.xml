@@ -94,7 +94,6 @@ android:gravity="center_vertical">
         android:src="@drawable/ic_delete"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Delete Item"
-        android:layout_marginStart="12dp"
-        android:layout_gravity="center_vertical""/>
+        android:layout_marginStart="12dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
