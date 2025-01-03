@@ -5,15 +5,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.razorpay.Checkout
-import com.razorpay.PaymentResultListener
-import org.json.JSONException
-import org.json.JSONObject
+import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback
+import com.midtrans.sdk.corekit.core.MidtransSDK
+import com.midtrans.sdk.corekit.models.TransactionResult
+import com.midtrans.sdk.uikit.SdkUIFlowBuilder
 
-class MainActivity : AppCompatActivity(), PaymentResultListener {
+class MainActivity : AppCompatActivity(), TransactionFinishedCallback {
 
-    // on below line we are creating
-    // variables for our edit text and button
+    // Deklarasi variabel untuk EditText dan Button
     lateinit var amtEdt: EditText
     lateinit var payBtn: Button
 
@@ -21,69 +20,73 @@ class MainActivity : AppCompatActivity(), PaymentResultListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // on below line we are initializing
-        // our variable with their ids.
+        // Inisialisasi variabel
         amtEdt = findViewById(R.id.idEdtAmt)
-        payBtn = findViewById(R.id.idBtnMakePaymanet)
+        payBtn = findViewById(R.id.idBtnMakePayment)
 
-        // on below line adding click listener for pay button
+        // Inisialisasi SDK Midtrans
+        initMidtransSdk()
+
+        // Tombol pembayaran
         payBtn.setOnClickListener {
+            val amount = amtEdt.text.toString()
 
-            // on below line getting amount from edit text
-            val amt = amtEdt.text.toString()
-
-            // rounding off the amount.
-            val amount = Math.round(amt.toFloat() * 100).toInt()
-
-            // on below line we are
-            // initializing razorpay account
-            val checkout = Checkout()
-
-            // on the below line we have to see our id.
-            checkout.setKeyID("Enter your key here")
-
-            // set image
-            checkout.setImage(R.drawable.android)
-
-            // initialize json object
-            val obj = JSONObject()
-            try {
-                // to put name
-                obj.put("name", "Geeks for Geeks")
-
-                // put description
-                obj.put("description", "Test payment")
-
-                // to set theme color
-                obj.put("theme.color", "")
-
-                // put the currency
-                obj.put("currency", "INR")
-
-                // put amount
-                obj.put("amount", amount)
-
-                // put mobile number
-                obj.put("prefill.contact", "9284064503")
-
-                // put email
-                obj.put("prefill.email", "chaitanyamunje@gmail.com")
-
-                // open razorpay to checkout activity
-                checkout.open(this@MainActivity, obj)
-            } catch (e: JSONException) {
-                e.printStackTrace()
+            // Validasi input
+            if (amount.isEmpty()) {
+                Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            // Memulai pembayaran
+            startPayment(amount.toDouble())
         }
     }
 
-    override fun onPaymentSuccess(s: String?) {
-        // this method is called on payment success.
-        Toast.makeText(this, "Payment is successful : " + s, Toast.LENGTH_SHORT).show();
+    private fun initMidtransSdk() {
+        SdkUIFlowBuilder.init()
+            .setContext(this)
+            .setClientKey("YOUR_CLIENT_KEY") // Ganti dengan Client Key Anda
+            .setMerchantBaseUrl("https://YOUR_SERVER_URL/") // URL server Anda
+            .enableLog(true)
+            .buildSDK()
     }
 
-    override fun onPaymentError(p0: Int, s: String?) {
-        // on payment failed.
-        Toast.makeText(this, "Payment Failed due to error : " + s, Toast.LENGTH_SHORT).show();
+    private fun startPayment(amount: Double) {
+        // Konfigurasi transaksi Midtrans
+        MidtransSDK.getInstance().transactionRequest = MidtransSDK.getInstance()
+            .transactionRequest.apply {
+                transactionAmount = amount
+                customerDetails = com.midtrans.sdk.corekit.models.CustomerDetails(
+                    "test@domain.com",
+                    "Customer Name",
+                    "08123456789",
+                    "test@domain.com"
+                )
+            }
+
+        // Memulai UI Flow Midtrans
+        MidtransSDK.getInstance().startPaymentUiFlow(this)
+    }
+
+    override fun onTransactionFinished(result: TransactionResult?) {
+        // Callback hasil transaksi
+        if (result != null) {
+            when {
+                result.status == TransactionResult.STATUS_SUCCESS -> {
+                    Toast.makeText(this, "Transaction Successful", Toast.LENGTH_SHORT).show()
+                }
+                result.status == TransactionResult.STATUS_PENDING -> {
+                    Toast.makeText(this, "Transaction Pending", Toast.LENGTH_SHORT).show()
+                }
+                result.status == TransactionResult.STATUS_FAILED -> {
+                    Toast.makeText(this, "Transaction Failed", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    Toast.makeText(this, "Transaction Cancelled", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(this, "Transaction Error", Toast.LENGTH_SHORT).show()
+        }
     }
 }
