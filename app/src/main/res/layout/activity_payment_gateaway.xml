@@ -3,18 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@color/white">
 
+    <!-- Header Text -->
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Gateway"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Input Amount -->
     <EditText
         android:id="@+id/idEdtAmt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Amount"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Payment Button -->
     <Button
         android:id="@+id/idBtnMakePayment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Make Payment" />
+        android:text="Make Payment"
+        android:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>
